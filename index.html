@@ -1,4 +1,7 @@
+<!doctype html>
+<html lang="it">
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Trading Cult</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="Copy trading solo sull'oro: specialisti con esperienza istituzionale e una gestione costruita sul tuo profilo. Il tuo conto copia e basta.">
@@ -239,7 +242,7 @@ input[type=range]:focus-visible { outline: 2px solid var(--lime); outline-offset
 .sec.in [data-r] { opacity: 1; transform: none }
 
 /* barra fissa: compare dopo l'hero, sparisce sulla chiusura */
-.dock { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 30; display: flex; align-items: center; gap: 18px; padding: 8px 8px 8px 18px; border-radius: 999px; background: rgba(22,25,34,.78); backdrop-filter: saturate(160%) blur(20px); -webkit-backdrop-filter: saturate(160%) blur(20px); box-shadow: 0 20px 50px -20px rgba(0,0,0,.8), inset 0 0 0 1px rgba(255,255,255,.06); transform: translate(-50%, 140%); opacity: 0; transition: transform .7s var(--out), opacity .5s; max-width: calc(100% - 32px) }
+.dock { position: fixed; left: 50%; width: max-content; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 30; display: flex; align-items: center; gap: 18px; padding: 8px 8px 8px 18px; border-radius: 999px; background: rgba(22,25,34,.78); backdrop-filter: saturate(160%) blur(20px); -webkit-backdrop-filter: saturate(160%) blur(20px); box-shadow: 0 20px 50px -20px rgba(0,0,0,.8), inset 0 0 0 1px rgba(255,255,255,.06); transform: translate(-50%, 140%); opacity: 0; transition: transform .7s var(--out), opacity .5s; max-width: calc(100% - 32px) }
 .dock.show { transform: translate(-50%, 0); opacity: 1 }
 .dock img { height: 20px; width: auto; display: block }
 .dock span { font-size: .92rem; color: var(--muted); white-space: nowrap }
@@ -291,10 +294,12 @@ input[type=range]:focus-visible { outline: 2px solid var(--lime); outline-offset
 @media (max-width: 700px) {
   .cmp { grid-template-columns: 1fr 1fr }
   .cmp .glowcol { left: 50% }
-  .cmp .cell.lab-c { grid-column: 1 / -1; border-bottom: 0; padding: 22px 14px 4px }
-  .cmp .cell { padding: 14px; align-items: flex-start; font-size: .92rem }
+  .cmp .cell { padding: 14px; flex-direction: column; align-items: flex-start; gap: 10px; font-size: .92rem }
+  .cmp .cell.lab-c { grid-column: 1 / -1; border-bottom: 0; padding: 22px calc(50% + 14px) 2px 14px }
+  .cmp .x, .cmp .ck { width: 22px; height: 22px }
   .cmp .thead.blank { display: none }
 }
+@media (max-width: 380px) { .cmp .cell { padding-left: 10px; padding-right: 10px } .cmp .cell.lab-c { padding-right: calc(50% + 10px) } .cmp .thead { letter-spacing: .08em } }
 @media (prefers-reduced-motion: reduce) { .cmp .glowcol, .cmp .lab, .cmp span, .cmp path, .cmp circle { transition: none !important } }
 
 
