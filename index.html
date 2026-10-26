@@ -1,0 +1,1412 @@
+<meta charset="utf-8">
+<title>Trading Cult</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Copy trading solo sull'oro: specialisti con esperienza istituzionale e una gestione costruita sul tuo profilo. Il tuo conto copia e basta.">
+<link rel="icon" href="assets/icona.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@1,6..72,600&display=swap">
+<style>
+/* Trading Cult · landing. Un solo tema (notte), accento lime.
+   Animazioni: ingresso hero, parola che ruota, confronto, bento, percorso, numeri, bottone finale.
+   Tutto parte quando la sezione entra nello schermo e rispetta prefers-reduced-motion. */
+:root {
+  --bg: #080A10; --night: #0C0F17; --night-2: #151A26; --night-3: #1C2231; --line: #262D3D;
+  --paper: #E6E8EE; --muted: #8B93A7; --lime: #F1FB9B; --olive: #7E8559; --lime-glow: rgba(241,251,155,.16);
+  --sans: "Be Vietnam Pro", "Helvetica Neue", Arial, sans-serif;
+  --serif: "Newsreader", Georgia, serif;
+  --ui: "Be Vietnam Pro", "Helvetica Neue", Arial, sans-serif;
+  --spring: cubic-bezier(.34, 1.56, .64, 1);
+  --out: cubic-bezier(.22, 1, .36, 1);
+  --inout: cubic-bezier(.65, 0, .35, 1);
+  color-scheme: dark;
+}
+* { box-sizing: border-box }
+html { scroll-behavior: smooth }
+html, body { overscroll-behavior-y: none }
+body { margin: 0; background: var(--bg); color: var(--paper); font: 400 16px/1.6 var(--sans); -webkit-font-smoothing: antialiased; overflow-x: hidden }
+a { color: inherit }
+img, svg { max-width: 100% }
+/* margine laterale ampio: lo stile minimal ha bisogno di aria ai lati */
+:root { --gut: clamp(24px, 6.5vw, 112px) }
+.wrap { max-width: 1240px; margin: 0 auto; padding-left: max(var(--gut), env(safe-area-inset-left, 0px)); padding-right: max(var(--gut), env(safe-area-inset-right, 0px)) }
+h1, h2, h3 { margin: 0; font-weight: 800; letter-spacing: -.035em; line-height: 1.02; text-wrap: balance }
+h2 { font-size: clamp(2rem, 5vw, 3.4rem) }
+h3 { font-size: 1.15rem; letter-spacing: -.02em; line-height: 1.2 }
+p { margin: 0 }
+.it { font-family: var(--serif); font-style: italic; font-weight: 600; letter-spacing: -.02em; font-size: 1.04em }
+.acc { color: var(--lime) }
+.muted { color: var(--muted) }
+.tag { font: 700 .68rem/1 var(--ui); letter-spacing: .12em; text-transform: uppercase; color: var(--muted) }
+.num, .row, .sl .v, .ylab, .xlab, .heat, .tip, .presets, .seg, .chip, .mark, .acct header span { font-variant-numeric: tabular-nums }
+section { padding-block: clamp(80px, 12vw, 140px); overflow-x: clip }
+.head { display: grid; gap: 18px; max-width: 760px; margin-bottom: clamp(36px, 6vw, 64px) }
+.head p { color: var(--muted); font-size: 1.08rem; max-width: 60ch }
+
+/* Bottoni */
+.btn { position: relative; overflow: hidden; display: inline-flex; align-items: center; gap: 10px; height: 54px; padding: 0 26px; border-radius: 999px; font: 600 1rem var(--sans); text-decoration: none; border: 1px solid transparent; transition: transform .35s var(--spring), background .2s, border-color .2s; cursor: pointer }
+.btn:hover { transform: translateY(-2px) }
+.btn:focus-visible, a:focus-visible { outline: 2px solid var(--lime); outline-offset: 3px }
+.btn-lime { background: var(--lime); color: var(--night) }
+.btn-ghost { border-color: var(--line); color: var(--paper) }
+.btn-ghost:hover { border-color: var(--muted) }
+.btn .arrow { transition: transform .3s var(--out) }
+.btn:hover .arrow { transform: translateX(3px) }
+
+
+
+/* Navigazione */
+nav { position: sticky; top: 0; z-index: 20; padding-top: env(safe-area-inset-top, 0px); background: rgba(8,10,16,.72); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid rgba(38,45,61,.6) }
+nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 68px; gap: 16px }
+nav .logo img { height: 24px; width: auto; display: block }
+nav .links { display: flex; align-items: center; gap: 28px; font-size: .92rem }
+nav .links a:not(.btn) { color: var(--muted); text-decoration: none; transition: color .2s }
+nav .links a:not(.btn):hover { color: var(--paper) }
+nav .btn { height: 40px; padding: 0 18px; font-size: .9rem }
+
+/* Reveal generico: gli elementi [data-r] entrano quando la sezione ha .in */
+[data-r] { opacity: 0; transform: translateY(24px); transition: opacity .9s var(--out), transform .9s var(--out); transition-delay: var(--d, 0s) }
+.in [data-r] { opacity: 1; transform: none }
+
+/* 01 · HERO «Oro liquido»: metallo fuso in WebGL che scorre piano; il puntatore lo increspa, il clic manda un'onda.
+   A destra il prezzo dell'oro dal vivo (gold-api.com), con ripiego dimostrativo se la fonte non risponde. */
+.gh { position: relative; min-height: calc(100svh - 68px); padding-block: 0; overflow: hidden; display: grid; grid-template-rows: 1fr auto; isolation: isolate; background: #07090E }
+#gold { position: absolute; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; background: radial-gradient(ellipse at 70% 70%, #5A3A0E, #0C0F17 60%, #07090E) }
+.gh::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(90deg, rgba(7,9,14,.9) 0%, rgba(7,9,14,.68) 45%, rgba(7,9,14,0) 75%), linear-gradient(0deg, rgba(8,10,16,1) 0%, rgba(7,9,14,.6) 14%, rgba(7,9,14,0) 40%), linear-gradient(180deg, rgba(7,9,14,.5), rgba(7,9,14,0) 18%) }
+.gh-grain { position: absolute; inset: -50%; z-index: 1; pointer-events: none; opacity: .07; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); animation: grain 1s steps(4) infinite }
+@keyframes grain { 25% { transform: translate(-2%, 1%) } 50% { transform: translate(1%, -2%) } 75% { transform: translate(2%, 2%) } }
+.gh-main, .gh-foot { position: relative; z-index: 2 }
+.gh-main { align-self: center; padding-block: clamp(36px, 6vh, 72px) }
+.gh-grid { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 40px; align-items: end; max-width: 1280px }
+.gh-copy { display: grid; gap: 26px; max-width: 900px }
+.gh h1 { margin: 0; font-weight: 800; font-size: clamp(2.3rem, calc((min(1240px, 100vw) - 2 * var(--gut) - 360px) / 9.05), 6.5rem); line-height: .95; letter-spacing: -.05em; text-wrap: balance }
+.gh h1 .it { font-family: var(--serif); font-style: italic; font-weight: 600; letter-spacing: -.02em; font-size: 1.04em; color: var(--lime) }
+.gh h1 .l { display: block; overflow: hidden; padding-bottom: .06em }
+.gh h1 .l span { display: inline-block; clip-path: inset(-.1em 100% -.2em -.05em); transition: clip-path 1.1s cubic-bezier(.65, 0, .25, 1); transition-delay: var(--d) }  /* entrata «a tenda»: ogni riga si scopre da sinistra */
+.gh.on h1 .l span { clip-path: inset(-.1em -.2em -.2em -.05em) }
+/* sopra l'oro fuso: testo chiaro con un alone scuro morbido, così si legge senza coprire lo sfondo */
+.gh-lead { margin: 0; max-width: 54ch; color: rgba(236,238,243,.92); font-weight: 500; font-size: clamp(1rem, 1.5vw, 1.15rem); text-shadow: 0 1px 2px rgba(0,0,0,.65), 0 0 18px rgba(5,6,9,.75), 0 0 42px rgba(5,6,9,.55) }
+.gh-ctas { display: flex; gap: 12px; flex-wrap: wrap }
+.gh .btn-ghost { backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); background: rgba(12,15,23,.3); border-color: rgba(230,232,238,.18) }
+.gh .fade { opacity: 0; transform: translateY(14px); transition: opacity 1s var(--out), transform 1s var(--out); transition-delay: var(--d) }
+.gh.on .fade { opacity: 1; transform: none }
+.gh-ticker { position: relative; perspective: 1000px; min-width: 0 }
+.gh-ticker::after { content: ""; position: absolute; left: 12%; right: 12%; bottom: -34px; height: 40px; border-radius: 50%; background: radial-gradient(closest-side, rgba(0,0,0,.55), transparent); filter: blur(8px); transform: translateX(var(--fx, 0px)); pointer-events: none; z-index: -1 }
+.tk-card { --rx: 7deg; --ry: -12deg; position: relative; display: grid; gap: 12px; padding: 22px; border-radius: 22px; transform-style: preserve-3d; transform: translateY(calc(var(--lift, 0) * -8px)) rotateX(var(--rx)) rotateY(var(--ry)); will-change: transform;
+  background: linear-gradient(155deg, rgba(255,255,255,.13), rgba(255,255,255,.035) 38%, rgba(255,255,255,.01) 62%, rgba(255,255,255,.05));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.24), inset 0 0 0 1px rgba(255,255,255,.09), inset 0 -1px 0 rgba(0,0,0,.4), 0 1px 2px rgba(0,0,0,.3), 0 14px 28px -10px rgba(0,0,0,.55), var(--sx, 22px) var(--sy, 46px) 90px -22px rgba(0,0,0,.8) }
+.tk-card::before { content: ""; position: absolute; inset: 0; border-radius: inherit; background: rgba(10,12,19,.58); -webkit-backdrop-filter: blur(16px) saturate(140%); backdrop-filter: blur(16px) saturate(140%); transform: translateZ(-1px); pointer-events: none }
+.tk-card::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: radial-gradient(420px circle at var(--gx, 28%) var(--gy, 0%), rgba(255,255,255,calc(.15 - var(--lift, 0) * .1)), transparent 50%); transform: translateZ(1px); pointer-events: none }
+.tk-card > * { position: relative; z-index: 1 }
+.tk-top { transform: translateZ(18px) }
+.tk-price { transform: translateZ(48px) }
+.tk-chg { transform: translateZ(34px) }
+#tkSpark { transform: translateZ(26px) }
+.tk-foot { transform: translateZ(12px) }
+.tk-top { display: flex; justify-content: space-between; align-items: center; gap: 10px }
+.tk-top b { font-weight: 700; letter-spacing: .02em }
+.tk-status { display: inline-flex; align-items: center; gap: 7px; font: 700 .64rem var(--ui); letter-spacing: .12em; text-transform: uppercase; color: var(--muted) }
+.tk-status i { width: 7px; height: 7px; border-radius: 50%; background: var(--muted) }
+.tk-status.is-live { color: var(--lime) }
+.tk-status.is-live i { background: var(--lime); animation: pulse 2s infinite }
+.tk-price { font-weight: 800; font-size: 2.3rem; letter-spacing: -.035em; line-height: 1; font-variant-numeric: tabular-nums; display: flex; align-items: baseline; gap: 6px }
+.tk-price small { font-size: .9rem; color: var(--muted); font-weight: 600; letter-spacing: 0 }
+.tk-price .flash { transition: color .8s }
+.tk-price .up { color: var(--lime) } .tk-price .dn { color: #E5846E }
+.tk-chg { font: 600 .85rem var(--ui); font-variant-numeric: tabular-nums; color: var(--muted) }
+#tkSpark { width: 100%; height: 54px; display: block }
+.tk-foot { font-size: .72rem; color: var(--muted); line-height: 1.45 }
+.gh-foot { padding-bottom: 18px }
+.gh-foot .wrap { display: flex; justify-content: space-between; gap: 16px; font-size: .75rem; color: var(--muted); flex-wrap: wrap }
+.gh-foot .hint { opacity: .8; transition: color .4s, opacity .4s }
+.gh-foot .hint.ping { color: var(--lime); opacity: 1 }
+/* la goccia che cade sull'oro all'apertura, per far capire che il metallo risponde */
+.drop { position: absolute; z-index: 2; width: 13px; height: 17px; margin: -9px 0 0 -6.5px; pointer-events: none; border-radius: 50% 50% 50% 50% / 62% 62% 38% 38%;
+  background: radial-gradient(circle at 38% 30%, #FFF6D8 0 12%, #F4C860 34%, #A86F18 78%, #5A3A0E); box-shadow: 0 0 14px rgba(244,200,96,.45);
+  animation: dropfall .72s cubic-bezier(.55, 0, .95, .5) forwards }
+@keyframes dropfall { 0% { transform: translateY(-62vh) scaleY(1.35); opacity: 0 } 18% { opacity: 1 } 88% { transform: translateY(-4px) scale(.9, 1.15); opacity: 1 } 100% { transform: translateY(0) scale(1.5, .35); opacity: 0 } }
+@media (hover: none) { .gh-foot .hint { display: none } }
+@media (max-width: 900px) {
+  .gh-grid { grid-template-columns: 1fr; gap: 28px }
+  .gh-ticker { max-width: 420px }
+  .gh h1 { font-size: clamp(2.1rem, calc((100vw - 2 * var(--gut)) / 9.05), 6.5rem) }
+  .gh-main { padding-block: clamp(36px, 7svh, 64px) clamp(28px, 5svh, 48px) }
+  .gh::after { background: linear-gradient(0deg, rgba(8,10,16,1) 0%, rgba(7,9,14,.8) 45%, rgba(7,9,14,0) 70%, rgba(7,9,14,.2) 100%) }
+}
+@media (prefers-reduced-motion: reduce) { .gh h1 .l span, .gh .fade { transition: none !important; transform: none !important; opacity: 1 !important; clip-path: none !important } .gh-grain { animation: none } .tk-card { will-change: auto } }
+.pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 0 0 rgba(241,251,155,.6); animation: pulse 2s infinite; display: inline-block }
+@keyframes pulse { 70% { box-shadow: 0 0 0 10px rgba(241,251,155,0) } 100% { box-shadow: 0 0 0 0 rgba(241,251,155,0) } }
+
+/* LA PROVA · simulazione interattiva */
+.proof { border-top: 1px solid var(--line) }
+.lab-box { background: var(--night); border: 1px solid var(--line); border-radius: 24px; padding: clamp(18px, 3.4vw, 36px); display: grid; gap: 28px }
+.controls { display: grid; grid-template-columns: 1.2fr 1fr; gap: clamp(20px, 4vw, 48px); align-items: start }
+.ctl { display: grid; gap: 14px; min-width: 0 }
+.cap-val { font-size: clamp(2.2rem, 5vw, 3.2rem); font-weight: 800; letter-spacing: -.04em; line-height: 1 }
+input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 28px; background: transparent; cursor: pointer; --p: 9% }
+input[type=range]::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: linear-gradient(90deg, var(--lime) var(--p), var(--night-3) var(--p)) }
+input[type=range]::-moz-range-track { height: 6px; border-radius: 3px; background: linear-gradient(90deg, var(--lime) var(--p), var(--night-3) var(--p)) }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 24px; height: 24px; margin-top: -9px; border-radius: 50%; background: var(--paper); box-shadow: 0 0 0 6px rgba(241,251,155,.2); transition: transform .2s var(--spring) }
+input[type=range]::-moz-range-thumb { width: 24px; height: 24px; border: 0; border-radius: 50%; background: var(--paper); box-shadow: 0 0 0 6px rgba(241,251,155,.2) }
+input[type=range]:active::-webkit-slider-thumb { transform: scale(1.15) }
+input[type=range]:focus-visible { outline: 2px solid var(--lime); outline-offset: 4px; border-radius: 4px }
+.presets, .seg { display: flex; gap: 6px; flex-wrap: wrap }
+.presets button, .seg button { font: 600 .84rem var(--ui); color: var(--muted); background: var(--bg); border: 1px solid var(--line); border-radius: 999px; padding: 8px 13px; cursor: pointer; transition: color .2s, background .2s, border-color .2s, transform .3s var(--spring) }
+.presets button:hover, .seg button:hover { color: var(--paper); border-color: var(--muted) }
+.presets button.on, .seg button.on { background: var(--lime); color: var(--night); border-color: var(--lime) }
+.presets button:active, .seg button:active { transform: scale(.94) }
+.presets button:focus-visible, .seg button:focus-visible { outline: 2px solid var(--lime); outline-offset: 2px }
+.switch { display: flex; align-items: center; gap: 12px; font-size: .92rem; color: var(--muted); cursor: pointer; margin-top: 6px }
+.switch input { position: absolute; opacity: 0; width: 1px; height: 1px }
+.switch .knob { position: relative; flex: none; width: 46px; height: 26px; border-radius: 13px; background: var(--night-3); border: 1px solid var(--line); transition: background .3s }
+.switch .knob::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: var(--paper); transition: transform .45s var(--spring) }
+.switch input:checked + .knob { background: var(--lime) } .switch input:checked + .knob::after { transform: translateX(20px); background: var(--night) }
+.switch input:focus-visible + .knob { outline: 2px solid var(--lime); outline-offset: 2px }
+.switch input:checked ~ span:last-child { color: var(--paper) }
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px }
+.st { background: var(--bg); border: 1px solid var(--line); border-radius: 16px; padding: 18px; display: grid; gap: 8px; align-content: start; min-width: 0 }
+.st b { font-size: clamp(1.5rem, 3vw, 2.1rem); font-weight: 800; letter-spacing: -.04em; line-height: 1.05 }
+.st small { color: var(--muted); font-size: .8rem }
+.chart { position: relative; padding-left: 64px; touch-action: pan-y }
+.chart svg { display: block; width: 100%; overflow: visible }
+.eq { height: clamp(220px, 34vw, 340px) }
+.eq .line { fill: none; stroke: var(--lime); stroke-width: 2.4; vector-effect: non-scaling-stroke; stroke-linejoin: round }
+.eq .base { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 5; vector-effect: non-scaling-stroke; opacity: .6 }
+.eq .grid { stroke: var(--line); stroke-width: 1; vector-effect: non-scaling-stroke }
+.eq .cross { stroke: var(--paper); stroke-width: 1; vector-effect: non-scaling-stroke; opacity: .45 }
+.uw { height: 54px; margin-top: 6px }
+.uw path { fill: var(--olive); opacity: .55 }
+.ylab, .xlab { position: absolute; font: 500 .7rem var(--ui); color: var(--muted); pointer-events: none }
+.ylab { left: 0; top: 0; width: 56px; height: clamp(220px, 34vw, 340px) }
+.ylab span { position: absolute; right: 0; transform: translateY(-50%) }
+.xlab { left: 64px; right: 0; bottom: -22px; height: 16px }
+.xlab span { position: absolute; transform: translateX(-50%); white-space: nowrap }
+.dot { position: absolute; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 0 5px rgba(241,251,155,.2), 0 0 16px var(--lime); left: -100px; top: 0; pointer-events: none; opacity: 0; transition: opacity .2s }
+.tip { position: absolute; top: 8px; left: 0; transform: translateX(-50%); background: var(--night-2); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; font-size: .82rem; display: grid; gap: 2px; pointer-events: none; opacity: 0; transition: opacity .2s; white-space: nowrap; z-index: 3; box-shadow: 0 10px 40px rgba(0,0,0,.4) }
+.tip.show { opacity: 1 }
+.tip b { font-size: 1.05rem; letter-spacing: -.02em }
+.tip .d { font: 500 .7rem var(--ui); color: var(--muted) }
+.legend2 { display: flex; gap: 20px; flex-wrap: wrap; font-size: .82rem; color: var(--muted); margin-top: 18px }
+.legend2 i { display: inline-block; width: 14px; height: 4px; border-radius: 2px; margin-right: 8px; vertical-align: middle }
+.legend2 .l1 { background: var(--lime) } .legend2 .l2 { background: var(--olive); height: 10px }
+.heat-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap }
+.heat-scroll { overflow-x: auto; margin-top: -12px; padding-bottom: 4px }
+.heat { display: grid; grid-template-columns: 52px repeat(12, minmax(48px, 1fr)) 64px; gap: 4px; min-width: 720px; font-variant-numeric: tabular-nums }
+.heat > span { font: 500 .68rem var(--ui); color: var(--muted); display: grid; place-items: center; padding: 4px 0 }
+.heat .c { height: 42px; border-radius: 8px; display: grid; place-items: center; font: 500 .74rem var(--ui); color: var(--paper); background: var(--night-2); opacity: 0; transform: scale(.7); transition: opacity .4s var(--out), transform .5s var(--spring); transition-delay: var(--d) }
+.heat .c.pos { background: rgba(241,251,155,var(--a)); color: var(--night) }
+.heat .c.pos.lo { color: var(--paper) }
+.heat .c.neg { background: rgba(229,132,110,var(--a)); color: var(--paper) }
+.heat .c.empty { background: transparent; border: 1px dashed var(--line) }
+.heat .c.yr { background: transparent; border: 1px solid var(--line); color: var(--lime); font-weight: 600 }
+.heat .c.yr.neg { color: #E5846E }
+.proof.in .heat .c { opacity: 1; transform: none }
+.disc b { color: var(--paper) }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap }
+@media (max-width: 860px) {
+  .controls { grid-template-columns: 1fr }
+  .stats { grid-template-columns: 1fr 1fr }
+  .st { padding: 14px }
+  .st b { font-size: 1.3rem; white-space: nowrap }
+  .chart { padding-left: 46px }
+  .ylab { width: 40px } .xlab { left: 46px }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: .01s !important; transition-delay: 0s !important; animation-duration: .01s !important; animation-iteration-count: 1 !important }
+  html { scroll-behavior: auto }
+}
+@media (max-width: 860px) { nav .links a:not(.btn) { display: none } }
+@media (max-width: 420px) { .gh-ctas .btn { width: 100%; justify-content: center } }
+.proof { border-top: 0 }
+/* ===== Sezioni sotto l'hero · stile «livello Apple» =====
+   Una cosa per schermata, titoli grandi a peso medio, superfici piene senza bordi, tanto spazio.
+   Il lime compare solo su bottoni e su una parola in corsivo; l'oro torna una sola volta (tessera «solo oro»). */
+:root { --bg-2: #0D1017; --tile: #12151D; --tile-2: #181C26; --dim: #5E6475; --r-xl: 30px; --r-lg: 22px }
+.sec { padding-block: clamp(110px, 15vw, 200px) }
+.sec.alt { background: var(--bg-2) }
+.eyebrow { display: block; font-size: clamp(1.05rem, 1.6vw, 1.3rem); font-weight: 600; letter-spacing: -.01em; color: var(--muted) }
+.big { margin: 0; font-weight: 600; font-size: clamp(2.7rem, 6.4vw, 5.4rem); line-height: 1; letter-spacing: -.05em; text-wrap: balance }
+.big .it { color: var(--lime) }
+.lead { margin: 0; font-size: clamp(1.1rem, 1.7vw, 1.4rem); line-height: 1.45; letter-spacing: -.01em; color: var(--muted); max-width: 44ch }
+.lead b { color: var(--paper); font-weight: 600 }
+.sh { display: grid; gap: 22px; max-width: 900px }
+.sh.c { text-align: center; justify-items: center; margin-inline: auto }
+.tlink { display: inline-flex; gap: 6px; align-items: center; font-weight: 600; font-size: 1.05rem; color: var(--lime); text-decoration: none }
+.tlink:hover { text-decoration: underline; text-underline-offset: 4px }
+
+/* comparsa discreta mentre scorri */
+.sec [data-r] { opacity: 0; transform: translateY(28px) scale(.985); transition: opacity 1s var(--out), transform 1.1s var(--out); transition-delay: var(--d, 0s) }
+.sec.in [data-r] { opacity: 1; transform: none }
+
+/* barra fissa: compare dopo l'hero, sparisce sulla chiusura */
+.dock { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 30; display: flex; align-items: center; gap: 18px; padding: 8px 8px 8px 18px; border-radius: 999px; background: rgba(22,25,34,.78); backdrop-filter: saturate(160%) blur(20px); -webkit-backdrop-filter: saturate(160%) blur(20px); box-shadow: 0 20px 50px -20px rgba(0,0,0,.8), inset 0 0 0 1px rgba(255,255,255,.06); transform: translate(-50%, 140%); opacity: 0; transition: transform .7s var(--out), opacity .5s; max-width: calc(100% - 32px) }
+.dock.show { transform: translate(-50%, 0); opacity: 1 }
+.dock img { height: 20px; width: auto; display: block }
+.dock span { font-size: .92rem; color: var(--muted); white-space: nowrap }
+.dock .btn { height: 42px; padding: 0 20px; font-size: .92rem; white-space: nowrap }
+.r-foot .switch { text-align: left }
+
+/* 02 · promessa */
+.promise { text-align: center }
+.promise .big { font-size: clamp(2.9rem, 7.6vw, 6.6rem) }
+.rw { --rwd: .42s; display: grid; justify-items: center; overflow: hidden; height: 1.12em; line-height: 1.12; margin-top: .02em }
+.rw > span { grid-area: 1 / 1; font-family: var(--serif); font-style: italic; font-weight: 600; letter-spacing: -.02em; color: var(--lime); transform: translateY(105%); opacity: 0; transition: transform var(--rwd) var(--out), opacity calc(var(--rwd) * .7) }
+.rw > span.on { transform: none; opacity: 1 }
+.rw > span.out { transform: translateY(-105%); opacity: 0 }
+.promise .lead { margin: 34px auto 0; text-align: center; max-width: 52ch }
+
+/* tessera «solo oro»: l'unico punto, oltre all'hero, con l'oro */
+.goldtile { position: relative; overflow: hidden; border-radius: var(--r-xl); min-height: clamp(420px, 52vw, 620px); display: grid; align-items: end; isolation: isolate; background: #0A0A0A }
+.goldtile::before { content: ""; position: absolute; inset: 0; z-index: -2; background: url("assets/oro-a.jpg") 70% 50% / cover }
+.goldtile::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgba(5,6,9,.94) 0%, rgba(5,6,9,.75) 38%, rgba(5,6,9,.1) 75%), linear-gradient(0deg, rgba(5,6,9,.7), transparent 50%) }
+.goldtile .in-t { padding: clamp(30px, 5vw, 64px); display: grid; gap: 20px; max-width: 640px }
+.goldtile .big .it { color: var(--lime) }
+.goldtile .lead { color: rgba(230,232,238,.75) }
+
+/* 03 · perché noi: un unico grande blocco con quattro tessere */
+.vsbox { background: var(--tile); border-radius: var(--r-xl); padding: clamp(28px, 5vw, 72px); display: grid; gap: clamp(36px, 5vw, 60px) }
+.vstop { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 32px; align-items: end }
+.vstop .lead { justify-self: end }
+.vsfoot { display: flex; justify-content: center }
+/* confronto con il copy trading classico: la colonna nostra si accende, crocette e spunte si disegnano */
+.cmp { position: relative; display: grid; grid-template-columns: 1.1fr 1fr 1fr; border-radius: 20px }
+.cmp .glowcol { position: absolute; top: 0; bottom: 0; left: calc(100% * 2.1 / 3.1); right: 0; border: 1px solid rgba(241,251,155,.5); border-radius: 18px; background: linear-gradient(180deg, rgba(241,251,155,.09), rgba(241,251,155,.02)); box-shadow: 0 0 60px rgba(241,251,155,.08), 0 24px 48px -24px rgba(0,0,0,.7); transform-origin: top; transform: scaleY(0); transition: transform 1.1s var(--out); pointer-events: none }
+#confronto.in .cmp .glowcol { transform: scaleY(1) }
+.cmp .cell { padding: 22px; border-bottom: 1px solid var(--line); display: flex; gap: 14px; align-items: center; position: relative; min-width: 0 }
+.cmp .cell:nth-last-child(-n+3) { border-bottom: 0 }
+.cmp .thead { font: 700 .7rem var(--ui); letter-spacing: .12em; text-transform: uppercase; color: var(--muted) }
+.cmp .thead.us { color: var(--lime) }
+.cmp .lab { font-weight: 600; opacity: 0; transform: translateX(-24px); transition: opacity .6s var(--out), transform .6s var(--out); transition-delay: var(--d) }
+.cmp .them { color: var(--muted) }
+.cmp .us-cell { color: var(--paper); font-weight: 500 }
+.cmp .them span, .cmp .us-cell span { opacity: 0; transition: opacity .6s; transition-delay: var(--d) }
+#confronto.in .cmp .lab, #confronto.in .cmp .them span, #confronto.in .cmp .us-cell span { opacity: 1; transform: none }
+.cmp .x, .cmp .ck { flex: none; width: 26px; height: 26px }
+.cmp .x path { stroke: #5A6274; stroke-width: 2.2; stroke-linecap: round; stroke-dasharray: 12; stroke-dashoffset: 12; transition: stroke-dashoffset .35s var(--out); transition-delay: var(--d) }
+.cmp .x path + path { transition-delay: calc(var(--d) + .12s) }
+#confronto.in .cmp .x path { stroke-dashoffset: 0 }
+.cmp .ck circle { fill: var(--lime); transform-origin: center; transform: scale(0); transition: transform .5s var(--spring); transition-delay: var(--d) }
+.cmp .ck path { fill: none; stroke: var(--night); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 16; stroke-dashoffset: 16; transition: stroke-dashoffset .4s var(--out); transition-delay: calc(var(--d) + .25s) }
+#confronto.in .cmp .ck circle { transform: scale(1) } #confronto.in .cmp .ck path { stroke-dashoffset: 0 }
+@media (max-width: 700px) {
+  .cmp { grid-template-columns: 1fr 1fr }
+  .cmp .glowcol { left: 50% }
+  .cmp .cell.lab-c { grid-column: 1 / -1; border-bottom: 0; padding: 22px 14px 4px }
+  .cmp .cell { padding: 14px; align-items: flex-start; font-size: .92rem }
+  .cmp .thead.blank { display: none }
+}
+@media (prefers-reduced-motion: reduce) { .cmp .glowcol, .cmp .lab, .cmp span, .cmp path, .cmp circle { transition: none !important } }
+
+
+/* 04 · cosa ottieni: tessere grandi, disegno sopra e testo sotto */
+.feat { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: clamp(48px, 7vw, 80px) }
+.ft { background: var(--tile); border-radius: var(--r-xl); padding: clamp(26px, 3.4vw, 44px); display: grid; grid-template-rows: 1fr auto; gap: 30px; min-height: 480px; min-width: 0; overflow: hidden }
+.ft .vis { display: grid; place-items: center; min-height: 230px }
+.ft p { font-size: clamp(1.05rem, 1.4vw, 1.2rem); line-height: 1.45; color: var(--muted); max-width: 40ch }
+.ft p b { color: var(--paper); font-weight: 600 }
+/* disegni */
+.prof { width: min(100%, 380px); display: grid; gap: 22px }
+.prof .r { display: grid; grid-template-columns: 90px 1fr; gap: 16px; align-items: center; font-size: .92rem; color: var(--muted) }
+.prof .t { position: relative; height: 4px; border-radius: 2px; background: #262B38 }
+.prof .t i { position: absolute; left: 0; top: 0; bottom: 0; width: 0; border-radius: 2px; background: var(--paper); transition: width 1.6s var(--out); transition-delay: var(--d) }
+.prof .t i::after { content: ""; position: absolute; right: -9px; top: 50%; width: 18px; height: 18px; margin-top: -9px; border-radius: 50%; background: var(--paper); box-shadow: 0 4px 14px rgba(0,0,0,.5) }
+.in .prof .t i { width: var(--w) }
+.desk { text-align: center; display: grid; gap: 6px }
+.desk b { font-size: clamp(4.4rem, 9vw, 7rem); font-weight: 600; letter-spacing: -.06em; line-height: .9 }
+.desk span { font-size: 1rem; color: var(--muted) }
+.own { text-align: center; display: grid; gap: 4px }
+.own b { font-size: clamp(4.4rem, 9vw, 7rem); font-weight: 600; letter-spacing: -.06em; line-height: .9 }
+.own b small { font-size: .45em; letter-spacing: -.03em }
+.own span { font-size: 1rem; color: var(--muted) }
+.talk { width: min(100%, 380px); display: grid; gap: 10px }
+.talk .m { justify-self: start; max-width: 86%; background: #232835; border-radius: 20px 20px 20px 6px; padding: 12px 16px; font-size: .95rem; line-height: 1.4 }
+.talk .m.me { justify-self: end; background: var(--lime); color: var(--night); border-radius: 20px 20px 6px 20px }
+.talk .m { opacity: 0; transform: translateY(10px); transition: opacity .6s var(--out), transform .6s var(--out); transition-delay: var(--d) }
+.in .talk .m { opacity: 1; transform: none }
+.talk .who { font-size: .8rem; color: var(--dim); margin-bottom: 2px }
+
+/* 05 · come funziona: tre passi a sinistra, lo schermo del conto a destra */
+.how2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(36px, 6vw, 90px); align-items: center; margin-top: clamp(48px, 7vw, 90px) }
+.steps2 { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none }
+.steps2 li { padding: 26px 0; border-top: 1px solid rgba(255,255,255,.08); display: grid; grid-template-columns: 56px 1fr; gap: 6px 10px; opacity: .38; transition: opacity .6s }
+.steps2 li.on { opacity: 1 }
+.steps2 .n { grid-row: span 2; font-size: 1rem; font-weight: 600; color: var(--dim); padding-top: 6px }
+.steps2 li.on .n { color: var(--lime) }
+.steps2 h3 { font-size: clamp(1.4rem, 2.2vw, 1.8rem); font-weight: 600; letter-spacing: -.035em; line-height: 1.15 }
+.steps2 p { color: var(--muted); font-size: 1.02rem; max-width: 42ch }
+.steps2 a { color: var(--paper); text-underline-offset: 3px }
+.stage { background: var(--tile); border-radius: var(--r-xl); padding: clamp(28px, 4vw, 56px) clamp(20px, 3vw, 40px) 0; display: grid; justify-items: center; overflow: hidden; min-width: 0 }
+.phone { width: min(100%, 320px); aspect-ratio: 320 / 470; border-radius: 46px 46px 0 0; background: #050608; padding: 12px 12px 0; box-shadow: inset 0 0 0 2px #2A2F3B, 0 -20px 60px -30px rgba(241,251,155,.15) }
+.scr { height: 100%; border-radius: 36px 36px 0 0; background: linear-gradient(180deg, #11141B, #0B0D12); padding: 22px 20px; display: grid; align-content: start; gap: 18px; overflow: hidden }
+.scr .bar { display: flex; justify-content: space-between; align-items: center; font-size: .78rem; color: var(--muted) }
+.scr .bar img { height: 16px }
+.scr .st2 { display: inline-flex; align-items: center; gap: 7px; font-size: .74rem; font-weight: 600; color: var(--lime) }
+.scr .st2 i { width: 7px; height: 7px; border-radius: 50%; background: var(--lime); animation: pulse 2s infinite }
+.scr .lbl { font-size: .78rem; color: var(--muted) }
+.scr .bal { white-space: nowrap; font-size: clamp(1.5rem, 6.4vw, 2.1rem); font-weight: 600; letter-spacing: -.04em; line-height: 1 }
+.scr .chg { font-size: .85rem; color: var(--lime); font-weight: 600 }
+.scr svg { width: 100%; height: 90px; display: block }
+.scr .op { background: #181C26; border-radius: 16px; padding: 14px; display: grid; gap: 4px; font-size: .82rem }
+.scr .op b { font-size: .95rem; font-weight: 600 }
+.scr .op .row2 { display: flex; justify-content: space-between; color: var(--muted) }
+.scr .op .row2 span:last-child { color: var(--lime); font-weight: 600 }
+.stage figcaption { font-size: .78rem; color: var(--dim); padding: 14px 0 18px }
+
+/* 06 · la prova: prima il numero, poi il laboratorio su una superficie piena */
+.proofhero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px; align-items: end; margin-top: clamp(48px, 7vw, 80px); margin-bottom: clamp(36px, 5vw, 56px) }
+.proofhero .num-big { font-size: clamp(4.6rem, 12vw, 10rem); font-weight: 600; letter-spacing: -.06em; line-height: .85 }
+.proofhero .num-big small { font-size: .38em; letter-spacing: -.03em; color: var(--muted); font-weight: 600 }
+.proofhero .lead { justify-self: end }
+.proof .lab-box { background: var(--tile); border: 0; border-radius: var(--r-xl) }
+.proof .st { background: var(--bg-2); border: 0 }
+.proof .presets button, .proof .seg button { background: transparent; border-color: #2A2F3B }
+.proof .presets button.on, .proof .seg button.on { background: var(--lime); color: var(--night); border-color: var(--lime) }
+.proof .heat .c.empty { border-color: #2A2F3B }
+.proof .heat .c.yr { border-color: #2A2F3B }
+.proof .tag { letter-spacing: .08em }
+.heat-head h3 { font-weight: 600 }
+
+/* 07 · costi: tre numeri in fila, ognuno con una riga sottile sopra */
+.figs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(20px, 4vw, 56px); margin-top: clamp(48px, 7vw, 90px) }
+.fig { border-top: 1px solid rgba(255,255,255,.18); padding-top: 22px; display: grid; gap: 10px; align-content: start; min-width: 0 }
+.fig .k { font-size: .95rem; font-weight: 600; color: var(--muted) }
+.fig .v { font-size: clamp(3.4rem, 7vw, 5.6rem); font-weight: 600; letter-spacing: -.06em; line-height: 1 }
+.fig .v.acc { color: var(--lime) }
+.fig p { color: var(--muted); font-size: 1rem; max-width: 30ch }
+.example { margin-top: clamp(40px, 6vw, 72px); background: var(--tile); border-radius: var(--r-lg); padding: 24px clamp(22px, 3vw, 36px); display: flex; align-items: center; gap: 14px 36px; flex-wrap: wrap }
+.example .t { font-size: .95rem; font-weight: 600; color: var(--muted); margin-right: auto }
+.example .s { display: grid; gap: 2px }
+.example .s span { font-size: .82rem; color: var(--dim) }
+.example .s b { font-size: 1.35rem; font-weight: 600; letter-spacing: -.03em }
+.example .s.last b { color: var(--lime) }
+.example .arr { color: var(--dim); font-size: 1.2rem }
+
+/* 08 · chiusura */
+.end { text-align: center }
+.end .wrap { display: grid; justify-items: center; gap: 28px }
+.end .big { font-size: clamp(3.4rem, 10vw, 8.4rem); letter-spacing: -.06em }
+.end .btn { height: 60px; padding: 0 34px; font-size: 1.08rem }
+.end .meta { display: flex; gap: 14px 40px; align-items: center; justify-content: center; flex-wrap: wrap; margin-top: 18px; color: var(--muted); font-size: .98rem }
+.end .meta b { color: var(--paper); font-weight: 600 }
+.end .qr { display: flex; align-items: center; gap: 16px; text-align: left }
+.end .qr img { width: 84px; height: 84px; border-radius: 12px }
+
+footer { border-top: 1px solid var(--line); padding-block: 48px calc(48px + env(safe-area-inset-bottom, 0px)) }
+footer .wrap { display: grid; gap: 22px }
+footer .top { display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap }
+footer .top img { height: 26px; width: auto }
+footer .fl { display: flex; gap: 22px; font-size: .9rem; flex-wrap: wrap }
+footer .fl a { color: var(--muted); text-decoration: none } footer .fl a:hover { color: var(--paper) }
+.risk { font-size: .8rem; color: var(--muted); line-height: 1.6; max-width: 110ch; padding: 18px 20px; border: 1px solid var(--line); border-radius: 14px; background: var(--night) }
+.risk b { color: var(--paper) }
+.copy { font-size: .78rem; color: #5A6274 }
+footer { border-top: 0; background: var(--bg-2) }
+.risk { border: 0; background: var(--tile) }
+
+@media (max-width: 900px) {
+  .vstop, .how2, .proofhero { grid-template-columns: minmax(0, 1fr) }
+  .vstop .lead, .proofhero .lead { justify-self: start }
+  .feat { grid-template-columns: minmax(0, 1fr) }
+  .ft { min-height: 0 }
+  .figs { grid-template-columns: minmax(0, 1fr) }
+  .end .qr { display: none }
+}
+@media (max-width: 560px) {
+  .dock span { display: none }
+  .example .arr { display: none }
+}
+@media (prefers-reduced-motion: reduce) { .sec [data-r], .rw > span, .talk .m, .prof .t i { transition: none !important } }
+
+[hidden] { display: none !important }
+/* ===== Revisione: quiz della prova, anno per anno, colori della mappa, tessera oro viva ===== */
+/* barra di avanzamento: una linea sottile sotto la navigazione che si riempie mentre scorri */
+.progress { position: fixed; left: 0; top: calc(68px + env(safe-area-inset-top, 0px)); height: 2px; width: 100%; z-index: 21; pointer-events: none; transform-origin: 0 50%; transform: scaleX(0); background: var(--lime); opacity: .85 }
+
+/* la prova: prima la domanda, poi il risultato */
+.quiz { margin-top: clamp(44px, 6vw, 72px); background: var(--tile); border-radius: var(--r-xl); padding: clamp(28px, 5vw, 72px) }
+.q-ask { display: grid; justify-items: center; text-align: center; gap: 22px }
+.q-n { font-size: .95rem; font-weight: 600; color: var(--muted) }
+.q-t { font-size: clamp(1.9rem, 4vw, 3rem); font-weight: 600; letter-spacing: -.045em; line-height: 1.05; max-width: 18ch }
+.q-opts { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 8px }
+.quiz .q-opts button { font: 600 1.05rem var(--sans); color: var(--paper); background: var(--bg); border: 1px solid #2A2F3B; border-radius: 999px; padding: 16px 24px; cursor: pointer; transition: background .25s, color .25s, border-color .25s, transform .3s var(--spring) }
+.quiz .q-opts button:hover { border-color: var(--lime); transform: translateY(-2px) }
+.quiz .q-opts button.on { background: var(--lime); color: var(--night); border-color: var(--lime) }
+.q-note { color: var(--dim); font-size: .95rem; max-width: 46ch }
+.quiz.answered .q-ask { gap: 14px }
+.quiz.answered .q-t, .quiz.answered .q-note, .quiz.answered .q-n { display: none }
+.quiz.answered .q-opts button { padding: 9px 16px; font-size: .9rem }
+.q-res { margin-top: 44px; display: grid; gap: 10px; text-align: center }
+.q-res.show { animation: resIn 1s var(--out) both }
+@keyframes resIn { from { opacity: 0; transform: translateY(20px) } }
+.r-lead { color: var(--muted); font-size: clamp(1.05rem, 1.6vw, 1.25rem) }
+.r-lead b { color: var(--paper); font-weight: 600 }
+.r-big { font-size: clamp(3.6rem, 10vw, 8rem); font-weight: 600; letter-spacing: -.06em; line-height: .95 }
+.r-gain { font-size: clamp(1.1rem, 1.8vw, 1.4rem); color: var(--muted) }
+.r-gain b { color: var(--lime); font-weight: 600 }
+.q-res .chart { margin-top: 34px; text-align: left }
+.r-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 14px 36px; margin-top: 40px; padding-top: 26px; border-top: 1px solid rgba(255,255,255,.07) }
+.r-mini { display: grid; gap: 2px; text-align: left }
+.r-mini span { font-size: .82rem; color: var(--dim) }
+.r-mini b { font-size: 1.25rem; font-weight: 600; letter-spacing: -.02em }
+.r-change { font: 600 .92rem var(--sans); color: var(--muted); background: none; border: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 4px }
+.r-change:hover { color: var(--paper) }
+.r-cta { margin-top: 44px; display: grid; justify-items: center; gap: 16px }
+.r-cta p { font-size: clamp(1.4rem, 2.6vw, 2rem); font-weight: 600; letter-spacing: -.035em }
+
+/* anno per anno */
+.ygrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(16px, 3vw, 40px); margin-top: clamp(48px, 7vw, 90px) }
+.yfig { border-top: 1px solid rgba(255,255,255,.18); padding-top: 22px; display: grid; gap: 8px; align-content: start; min-width: 0 }
+.yfig .k { font-size: .95rem; font-weight: 600; color: var(--muted) }
+.yfig .k small { color: var(--dim); font-weight: 500 }
+.yfig .v { font-size: clamp(2.2rem, 4.2vw, 3.7rem); font-weight: 600; letter-spacing: -.055em; line-height: 1 }
+.yfig .bar { height: 6px; border-radius: 3px; background: #22262F; overflow: hidden; margin-top: 6px }
+.yfig .bar i { display: block; height: 100%; width: 0; border-radius: 3px; background: var(--lime); transition: width 1.6s var(--out); transition-delay: var(--d) }
+.years.in .yfig .bar i { width: var(--w) }
+.heatbox { margin-top: clamp(48px, 7vw, 80px); background: var(--tile); border-radius: var(--r-xl); padding: clamp(22px, 3.4vw, 40px); display: grid; gap: 22px }
+.hh-note { font-size: .88rem; color: var(--dim) }
+/* Mese per mese: un solo numero da leggere, poi una fila di barre senza cifre */
+.mbox { gap: clamp(26px, 3.4vw, 40px) }
+.m-head { display: grid; gap: 10px }
+.m-k { font: 700 .72rem var(--ui); letter-spacing: .14em; text-transform: uppercase; color: var(--muted) }
+.m-big { margin: 0; font-size: clamp(1.6rem, 3.4vw, 2.6rem); font-weight: 600; letter-spacing: -.035em; line-height: 1.1; color: var(--muted) }
+.m-big b { color: var(--lime); font-weight: 700 }
+.m-big span { color: var(--paper) }
+.mchart { position: relative; touch-action: pan-y }
+.mbars { --base: 72%; position: relative; height: clamp(170px, 22vw, 250px); display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: clamp(2px, .45vw, 6px); cursor: crosshair }
+.mbars::before { content: ""; position: absolute; left: 0; right: 0; top: var(--base); height: 1px; background: rgba(255,255,255,.14) }
+.mb { position: relative }
+.mb i { position: absolute; left: 0; right: 0; border-radius: 3px; transform: scaleY(0); transition: transform .9s var(--out) var(--d), opacity .2s }
+.mb.pos i { bottom: calc(100% - var(--base)); height: var(--h); background: linear-gradient(180deg, var(--lime), rgba(241,251,155,.72)); transform-origin: bottom }
+.mb.neg i { top: var(--base); height: var(--h); background: #4A4F5C; transform-origin: top }
+.years.in .mb i { transform: none }
+.mbars.hovering .mb i { opacity: .38 }
+.mbars.hovering .mb.on i { opacity: 1 }
+.myears { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: clamp(2px, .45vw, 6px); margin-top: 12px }
+.myears span { display: grid; gap: 4px; border-left: 1px solid rgba(255,255,255,.12); padding-left: clamp(6px, 1vw, 12px); white-space: nowrap; overflow: hidden; min-width: 0 }
+.myears em { font: 500 .78rem var(--ui); font-style: normal; color: var(--dim) } .myears em small { font-size: .7rem; opacity: .8 }
+.myears b { font-size: clamp(1.05rem, 2.4vw, 1.9rem); font-weight: 600; letter-spacing: -.035em; line-height: 1; color: var(--paper) } .myears b.n { color: var(--muted) }
+@media (max-width: 560px) { .myears em small { display: none } }
+.mtip { position: absolute; top: -6px; left: 0; transform: translate(-50%, -100%); background: var(--night-2); border-radius: 10px; padding: 8px 11px; font: 600 .8rem var(--ui); white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity .15s; box-shadow: 0 10px 24px -8px rgba(0,0,0,.7), inset 0 0 0 1px rgba(255,255,255,.06) }
+.mtip.show { opacity: 1 }
+.mtip em { font-style: normal; color: var(--lime) } .mtip em.n { color: #B8BDC9 }
+.mbox .hh-note { margin: 0 }
+@media (hover: none) { .m-hint { font-size: 0 } .m-hint::after { content: "Tocca una barra per leggere il mese."; font-size: .88rem } }
+@media (prefers-reduced-motion: reduce) { .mb i { transition: none; transform: none } }
+
+.years.in .heat .c { opacity: 1; transform: none }
+.years .heat .c.empty, .years .heat .c.yr { border-color: #2A2F3B }
+/* colori: ogni mese positivo è chiaramente positivo, anche un +2%; l'intensità varia poco */
+.heat .c.pos, .heat .c.pos.lo { background: color-mix(in oklab, var(--lime) calc(var(--a) * 100%), #CBD98A); color: var(--night); font-weight: 600 }
+.heat .c.neg { background: color-mix(in oklab, #2E2427, #5C3532 calc(var(--a) * 100%)); color: #F0C2B6 }
+
+/* tessera oro: metallo vivo (lo stesso dell'hero) al posto dell'immagine ferma */
+.goldtile::before { display: none }
+.goldtile canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -2; display: block; background: radial-gradient(ellipse at 70% 50%, #4A3410, #0A0A0A 70%) }
+
+@media (max-width: 900px) { .ygrid { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
+@media (max-width: 560px) { .r-foot { justify-content: flex-start } .r-cta .btn { width: 100%; justify-content: center } }
+@media (prefers-reduced-motion: reduce) { .yfig .bar i { transition: none } }
+/* Ombre delle card: luce dall'alto, filo di luce sul bordo, ombra a strati (contatto, vicina, ambiente) */
+:root { --tile-face: linear-gradient(180deg, #161A24 0%, #12151D 46%, #10131A 100%);
+  --elev: inset 0 1px 0 rgba(255,255,255,.075), inset 0 0 0 1px rgba(255,255,255,.04), 0 1px 1px rgba(0,0,0,.45), 0 6px 12px -4px rgba(0,0,0,.4), 0 28px 56px -18px rgba(0,0,0,.62), 0 70px 120px -40px rgba(0,0,0,.7) }
+.vsbox, .ft, .stage, .proof .lab-box, .example, .quiz, .heatbox { background: var(--tile-face); box-shadow: var(--elev) }
+.goldtile { box-shadow: 0 1px 1px rgba(0,0,0,.45), 0 28px 56px -18px rgba(0,0,0,.65), 0 70px 120px -40px rgba(0,0,0,.75), inset 0 0 0 1px rgba(255,255,255,.05) }
+.risk { box-shadow: inset 0 1px 0 rgba(255,255,255,.05), inset 0 0 0 1px rgba(255,255,255,.03) }
+/* Effetto lucido: riflesso morbido dall'angolo in alto e una lama di luce diagonale, fermi */
+:root { --gloss: radial-gradient(130% 90% at 12% -12%, rgba(255,255,255,.06), transparent 52%) }
+.vsbox, .stage, .proof .lab-box, .example, .quiz, .heatbox { background: var(--gloss), var(--tile-face) }
+.risk { background: var(--gloss), var(--tile) }
+.cmp .glowcol { background: radial-gradient(120% 60% at 20% 0%, rgba(255,255,255,.08), transparent 55%), linear-gradient(180deg, rgba(241,251,155,.09), rgba(241,251,155,.02)) }
+/* Card di Perché noi: lo stesso rilievo della card dell'oro, senza movimento */
+.ft { background: radial-gradient(140% 100% at 10% -15%, rgba(255,255,255,.09), transparent 50%), linear-gradient(155deg, #1A1F2B 0%, #13161E 46%, #0F1218 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.14), inset 0 0 0 1px rgba(255,255,255,.055), inset 0 -2px 0 rgba(0,0,0,.4), 0 2px 3px rgba(0,0,0,.4), 0 18px 34px -12px rgba(0,0,0,.6), 16px 46px 90px -30px rgba(0,0,0,.78) }
+.vsbox { box-shadow: inset 0 1px 0 rgba(255,255,255,.1), inset 0 0 0 1px rgba(255,255,255,.045), inset 0 -2px 0 rgba(0,0,0,.35), 0 2px 3px rgba(0,0,0,.4), 0 24px 48px -16px rgba(0,0,0,.6), 0 70px 120px -40px rgba(0,0,0,.72) }
+.goldtile::after { background: var(--gloss), linear-gradient(90deg, rgba(5,6,9,.94) 0%, rgba(5,6,9,.75) 38%, rgba(5,6,9,.1) 75%), linear-gradient(0deg, rgba(5,6,9,.7), transparent 50%) }
+/* Oro contro Trading Cult: 10.000 € dal 1° gennaio 2024, due barre e una sola cifra da guardare */
+.gvs { margin-top: clamp(48px, 7vw, 80px); border-radius: var(--r-xl); padding: clamp(24px, 4vw, 52px); display: grid; gap: clamp(22px, 3vw, 34px); background: var(--gloss), var(--tile-face); box-shadow: var(--elev) }
+.gvs-k { font-size: .78rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--dim) }
+.gvs-row { display: grid; grid-template-columns: minmax(150px, 220px) minmax(0, 1fr) minmax(110px, 150px); align-items: center; gap: clamp(14px, 2.4vw, 32px) }
+.gvs-l { display: grid; gap: 2px } .gvs-l b { font-size: 1.15rem; font-weight: 600; letter-spacing: -.02em } .gvs-l span { font-size: .86rem; color: var(--dim) }
+.gvs-row.us .gvs-l b { color: var(--lime) }
+.gvs-bar { height: 16px; border-radius: 99px; background: rgba(255,255,255,.045); box-shadow: inset 0 1px 2px rgba(0,0,0,.5); overflow: hidden }
+.gvs-bar i { display: block; height: 100%; width: calc(var(--w) * 100%); border-radius: inherit; transform: scaleX(0); transform-origin: left; transition: transform 1.8s var(--out) var(--d, .3s) }
+.gvs-row.them .gvs-bar i { background: linear-gradient(90deg, #343946, #5E6475) }
+.gvs-row.us .gvs-bar i { background: linear-gradient(90deg, var(--olive), var(--lime)); box-shadow: 0 0 24px rgba(241,251,155,.25) }
+.in .gvs-bar i { transform: none }
+.gvs-v { display: grid; justify-items: end; gap: 2px; text-align: right } .gvs-v b { font-size: clamp(1.6rem, 3vw, 2.3rem); font-weight: 600; letter-spacing: -.04em; line-height: 1 } .gvs-v span { font-size: .9rem; color: var(--muted) }
+.gvs-row.them .gvs-v b { color: var(--muted) } .gvs-row.us .gvs-v b { color: var(--paper) }
+.gvs-foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 10px 28px; padding-top: clamp(18px, 2.4vw, 26px); border-top: 1px solid rgba(255,255,255,.06) }
+.gvs-x { font-size: clamp(1.1rem, 1.8vw, 1.4rem); font-weight: 600; letter-spacing: -.02em; color: var(--muted) } .gvs-x b { color: var(--lime); font-weight: 700 }
+.gvs-foot > span:last-child { font-size: .92rem; color: var(--muted) } .gvs-foot > span:last-child b { color: var(--paper); font-weight: 600 }
+.gvs .hh-note { margin: 0; max-width: 90ch; line-height: 1.55 }
+@media (max-width: 700px) { .gvs-row { grid-template-columns: minmax(0, 1fr) auto; row-gap: 12px } .gvs-bar { grid-column: 1 / -1; grid-row: 2 } }
+@media (prefers-reduced-motion: reduce) { .gvs-bar i { transition: none; transform: none } }
+/* Alone sotto la card: al passaggio del cursore una luce lime ampia e soffusa esce da sotto la card e la segue */
+.has-glare { position: relative; z-index: 1 }
+.under { position: absolute; z-index: 0; pointer-events: none; opacity: 0; transition: opacity 1.2s var(--out); filter: blur(64px); border-radius: 120px;
+  background: radial-gradient(85% 85% at var(--ux, 50%) var(--uy, 50%), rgba(241,251,155,.1), rgba(126,133,89,.055) 50%, transparent 82%), radial-gradient(closest-side, rgba(241,251,155,.035), rgba(126,133,89,.02) 75%, transparent) }
+.under.on { opacity: 1 }
+.under.soft.on { opacity: .35 } /* card del telefono: è isolata e alta, l'alone si vede di più */
+@media (hover: none) { .under { display: none } }
+/* Rilievo al passaggio del cursore: la card si solleva e si inclina verso il mouse, come la card dell'oro; ombra e luce la seguono */
+.tilt, .tilt.tilt.tilt[data-r] { transform: perspective(1400px) translateY(calc(var(--lift, 0) * -6px)) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: opacity 1s var(--out);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,calc(.09 + var(--lift, 0) * .12)), inset 0 0 0 1px rgba(255,255,255,calc(.045 + var(--lift, 0) * .03)), inset 0 -2px 0 rgba(0,0,0,.38), 0 2px 3px rgba(0,0,0,.4),
+    calc(var(--sx, 0px) * .4) calc(18px + var(--lift, 0) * 12px) calc(34px + var(--lift, 0) * 14px) -12px rgba(0,0,0,.6), var(--sx, 0px) calc(46px + var(--lift, 0) * 30px) calc(90px + var(--lift, 0) * 50px) -30px rgba(0,0,0,calc(.75 + var(--lift, 0) * .1)) }
+</style>
+
+<nav>
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="Trading Cult, inizio pagina"><img src="assets/logo.svg" alt="trading cult"></a>
+    <div class="links">
+      <a href="#confronto">Perché noi</a>
+      <a href="#come-funziona">Come funziona</a>
+      <a href="#prova">La prova</a>
+      <a href="#costi">Costi</a>
+      <a class="btn btn-lime" href="https://t.me/tradingcultfx" target="_blank" rel="noopener">Telegram</a>
+    </div>
+  </div>
+</nav>
+
+<main id="top">
+  <!-- 01 · Hero «Oro liquido» -->
+  <section class="gh" id="hero">
+    <canvas id="gold" aria-hidden="true"></canvas>
+    <div class="gh-grain" aria-hidden="true"></div>
+    <div class="gh-main"><div class="wrap gh-grid">
+      <div class="gh-copy">
+        <h1 aria-label="Il trading istituzionale, alla portata di tutti.">
+          <span class="l" aria-hidden="true"><span style="--d:.35s">Il trading</span></span>
+          <span class="l" aria-hidden="true"><span style="--d:.5s">istituzionale,</span></span>
+          <span class="l" aria-hidden="true"><span style="--d:.65s">alla portata <em class="it">di tutti.</em></span></span>
+        </h1>
+        <p class="gh-lead fade" style="--d:1s">Operiamo su un solo mercato: l'oro. Trader con esperienza istituzionale, una gestione costruita sul tuo profilo e un conto che resta sempre intestato a te. Ci riconosci il 30% solo sui profitti.</p>
+        <div class="gh-ctas fade" style="--d:1.15s"><a class="btn btn-lime" href="https://t.me/tradingcultfx" target="_blank" rel="noopener">Entra nel canale Telegram <span class="arrow">→</span></a><a class="btn btn-ghost" href="#come-funziona">Come funziona</a></div>
+      </div>
+      <aside class="gh-ticker fade" style="--d:1.3s" aria-label="Prezzo dell'oro">
+        <div class="tk-card" id="tkCard">
+        <div class="tk-top"><b>XAUUSD · Oro</b><span class="tk-status" id="tkStatus"><i></i><span>Collegamento…</span></span></div>
+        <div class="tk-price"><span class="flash" id="tkPrice">–</span><small>USD/oz</small></div>
+        <div class="tk-chg" id="tkChg">&nbsp;</div>
+        <canvas id="tkSpark" aria-hidden="true"></canvas>
+        <div class="tk-foot">L'unico mercato su cui operano le nostre strategie. Il grafico si aggiorna mentre resti sulla pagina.</div>
+        </div>
+      </aside>
+    </div></div>
+    <div class="gh-foot"><div class="wrap"><span>I CFD comportano un rischio elevato di perdita.</span><span class="hint">Muovi il mouse sull'oro · clicca per un'onda</span></div></div>
+  </section>
+
+  <!-- 02 · La promessa: una frase per schermata -->
+  <section class="sec promise" id="rotator">
+    <div class="wrap">
+      <div class="sh c">
+        <span class="eyebrow" data-r>La nostra promessa</span>
+        <h2 class="big" data-r style="--d:.1s" aria-label="Una gestione costruita sul tuo profilo, capitale, rischio, orizzonte.">Una gestione costruita sul tuo <span class="rw" id="rw" aria-hidden="true"><span class="on">profilo.</span><span>capitale.</span><span>rischio.</span><span>orizzonte.</span></span></h2>
+      </div>
+      <p class="lead" data-r style="--d:.2s">Prima di attivare la copia parliamo con te: <b>quanto vuoi investire, quanto rischio sei disposto a correre, per quanto tempo</b>. Poi scegliamo le strategie adatte.</p>
+    </div>
+  </section>
+
+  <!-- Solo oro: l'unica tessera con l'oro fuori dall'hero -->
+  <section class="sec" style="padding-top:0">
+    <div class="wrap">
+      <div class="goldtile" data-r>
+        <div class="in-t">
+          <span class="eyebrow">Il nostro mercato</span>
+          <h2 class="big">Un solo mercato. <span class="it">L'oro.</span></h2>
+          <p class="lead">Operiamo esclusivamente su <b>XAUUSD</b>. Una specializzazione, non una lista di strumenti.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 · Perché noi: un unico blocco -->
+  <section class="sec alt" id="confronto">
+    <div class="wrap">
+      <div class="vsbox" data-r>
+        <div class="vstop">
+          <div class="sh"><span class="eyebrow">Perché noi</span><h2 class="big">Copy trading classico? No. <span class="it">Il tuo.</span></h2></div>
+          <p class="lead">Il copy trading classico ti mette davanti a una classifica e ti lascia solo. <b>Noi partiamo da te.</b></p>
+        </div>
+        <div class="cmp" role="table" aria-label="Copy trading classico e trading cult a confronto">
+          <div class="glowcol" aria-hidden="true"></div>
+          <div class="cell thead blank" role="columnheader"></div>
+          <div class="cell thead" role="columnheader">Copy trading classico</div>
+          <div class="cell thead us" role="columnheader">trading cult</div>
+          <div class="cell lab-c" role="rowheader"><span class="lab" style="--d:0.50s">Chi sceglie la strategia</span></div>
+          <div class="cell them" role="cell"><svg class="x" viewBox="0 0 26 26" style="--d:0.65s"><path d="M8 8 L18 18"/><path d="M18 8 L8 18"/></svg><span style="--d:0.65s">Tu, da una classifica</span></div>
+          <div class="cell us-cell" role="cell"><svg class="ck" viewBox="0 0 26 26" style="--d:0.80s"><circle cx="13" cy="13" r="12"/><path d="M8 13.5 L11.5 17 L18 9.5"/></svg><span style="--d:0.80s">Noi, in base al tuo profilo</span></div>
+          <div class="cell lab-c" role="rowheader"><span class="lab" style="--d:0.95s">Chi sono i trader</span></div>
+          <div class="cell them" role="cell"><svg class="x" viewBox="0 0 26 26" style="--d:1.10s"><path d="M8 8 L18 18"/><path d="M18 8 L8 18"/></svg><span style="--d:1.10s">Anonimi, spesso amatoriali</span></div>
+          <div class="cell us-cell" role="cell"><svg class="ck" viewBox="0 0 26 26" style="--d:1.25s"><circle cx="13" cy="13" r="12"/><path d="M8 13.5 L11.5 17 L18 9.5"/></svg><span style="--d:1.25s">Esperienza istituzionale, con nome e volto</span></div>
+          <div class="cell lab-c" role="rowheader"><span class="lab" style="--d:1.40s">Il rischio</span></div>
+          <div class="cell them" role="cell"><svg class="x" viewBox="0 0 26 26" style="--d:1.55s"><path d="M8 8 L18 18"/><path d="M18 8 L8 18"/></svg><span style="--d:1.55s">Una strategia uguale per tutti</span></div>
+          <div class="cell us-cell" role="cell"><svg class="ck" viewBox="0 0 26 26" style="--d:1.70s"><circle cx="13" cy="13" r="12"/><path d="M8 13.5 L11.5 17 L18 9.5"/></svg><span style="--d:1.70s">Calibrato su capitale e obiettivi</span></div>
+          <div class="cell lab-c" role="rowheader"><span class="lab" style="--d:1.85s">Chi ti segue</span></div>
+          <div class="cell them" role="cell"><svg class="x" viewBox="0 0 26 26" style="--d:2.00s"><path d="M8 8 L18 18"/><path d="M18 8 L8 18"/></svg><span style="--d:2.00s">Nessuno: sei un utente</span></div>
+          <div class="cell us-cell" role="cell"><svg class="ck" viewBox="0 0 26 26" style="--d:2.15s"><circle cx="13" cy="13" r="12"/><path d="M8 13.5 L11.5 17 L18 9.5"/></svg><span style="--d:2.15s">Un referente dedicato</span></div>
+        </div>
+        <div class="vsfoot"><a class="tlink" href="https://t.me/tradingcultfx" target="_blank" rel="noopener">Parlane con noi su Telegram <span aria-hidden="true">›</span></a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 · Cosa ottieni -->
+  <section class="sec" id="perche">
+    <div class="wrap">
+      <div class="sh" data-r><span class="eyebrow">Cosa ottieni</span><h2 class="big">Trading istituzionale. <span class="it">Alla portata di tutti.</span></h2></div>
+      <div class="feat">
+        <div class="ft" data-r style="--d:.05s">
+          <div class="vis"><div class="prof">
+            <div class="r"><span>Capitale</span><span class="t"><i style="--w:62%; --d:.4s"></i></span></div>
+            <div class="r"><span>Rischio</span><span class="t"><i style="--w:38%; --d:.55s"></i></span></div>
+            <div class="r"><span>Orizzonte</span><span class="t"><i style="--w:78%; --d:.7s"></i></span></div>
+          </div></div>
+          <p><b>Costruita su di te.</b> Strategie e livello di rischio scelti in base al tuo profilo. Nessun pacchetto uguale per tutti.</p>
+        </div>
+        <div class="ft" data-r style="--d:.15s">
+          <div class="vis"><div class="desk"><b>Desk</b><span>esperienza in strutture professionali</span></div></div>
+          <p><b>Esperienza istituzionale.</b> Le strategie sono condotte da trader con un passato in strutture professionali.</p>
+        </div>
+        <div class="ft" data-r style="--d:.05s">
+          <div class="vis"><div class="own"><b>100<small>%</small></b><span>intestato a te</span></div></div>
+          <p><b>Il conto resta tuo.</b> Sempre intestato a te presso il broker: lo vedi, lo controlli, lo ritiri quando vuoi.</p>
+        </div>
+        <div class="ft" data-r style="--d:.15s">
+          <div class="vis"><div class="talk">
+            <span class="who">Il tuo referente</span>
+            <div class="m" style="--d:.5s">Ciao, sono il tuo referente. Partiamo dal tuo profilo?</div>
+            <div class="m me" style="--d:1.3s">Perfetto, partiamo.</div>
+          </div></div>
+          <p><b>Un referente dedicato.</b> Una persona che conosce il tuo conto e ti risponde, non un modulo di contatto.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 · Come funziona -->
+  <section class="sec alt" id="come-funziona">
+    <div class="wrap">
+      <div class="sh" data-r><span class="eyebrow">Come funziona</span><h2 class="big">Tre passi. Poi il tuo conto <span class="it">copia e basta.</span></h2></div>
+      <div class="how2">
+        <ol class="steps2" id="steps2">
+          <li class="on"><span class="n">01</span><h3>Apri il tuo conto</h3><p>Ti registri presso il broker dal link che trovi nel nostro <a href="https://t.me/tradingcultfx" target="_blank" rel="noopener">canale Telegram</a>. Il conto è intestato a te e il capitale resta lì.</p></li>
+          <li><span class="n">02</span><h3>Costruiamo il tuo profilo</h3><p>Con il tuo referente definisci capitale, rischio e obiettivi. Noi selezioniamo le strategie adatte.</p></li>
+          <li><span class="n">03</span><h3>Il tuo conto copia</h3><p>Ogni operazione dei trader si replica sul tuo conto, in proporzione al capitale. Tu non devi fare altro.</p></li>
+        </ol>
+        <figure class="stage" data-r style="--d:.15s">
+          <div class="phone"><div class="scr">
+            <div class="bar"><img src="assets/logo.svg" alt="trading cult"><span class="st2"><i></i>Copia attiva</span></div>
+            <div><div class="lbl">Saldo del conto</div><div class="bal num">12.480,20 €</div><div class="chg num">+1,2% oggi</div></div>
+            <svg viewBox="0 0 280 90" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="phF" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F1FB9B" stop-opacity=".25"/><stop offset="1" stop-color="#F1FB9B" stop-opacity="0"/></linearGradient></defs><path d="M0 72 L20 68 L40 70 L60 60 L80 63 L100 52 L120 55 L140 44 L160 47 L180 36 L200 40 L220 28 L240 31 L260 18 L280 14 L280 90 L0 90 Z" fill="url(#phF)"/><path d="M0 72 L20 68 L40 70 L60 60 L80 63 L100 52 L120 55 L140 44 L160 47 L180 36 L200 40 L220 28 L240 31 L260 18 L280 14" fill="none" stroke="#F1FB9B" stroke-width="2" vector-effect="non-scaling-stroke"/></svg>
+            <div class="op"><b>Operazione replicata</b><div class="row2"><span>XAUUSD · acquisto</span><span>+38,40 €</span></div><div class="row2"><span>Copiata in proporzione al tuo capitale</span><span></span></div></div>
+          </div></div>
+          <figcaption>Schermata di esempio</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+  <!-- 06 · La prova: una domanda, poi il risultato si sblocca -->
+  <section class="sec proof" id="prova">
+    <div class="wrap">
+      <div class="sh" data-r>
+        <span class="eyebrow">La prova</span>
+        <h2 class="big">Mettici un capitale. <span class="it">Guarda cosa avrebbe fatto.</span></h2>
+      </div>
+
+      <div class="quiz" id="quiz" data-r style="--d:.1s">
+        <div class="q-ask">
+          <span class="q-n">Una sola domanda</span>
+          <h3 class="q-t">Quanto metteresti al lavoro con noi?</h3>
+          <div class="q-opts presets" id="capPresets" role="group" aria-label="Capitale da simulare">
+            <button data-v="5000">5.000 €</button><button data-v="10000">10.000 €</button><button data-v="25000">25.000 €</button><button data-v="50000">50.000 €</button><button data-v="100000">100.000 €</button>
+          </div>
+          <p class="q-note">Ti mostriamo cosa avrebbe fatto quel capitale da marzo 2023, operazione per operazione.</p>
+        </div>
+
+        <div class="q-res" id="qRes" hidden>
+          <p class="r-lead">Con <b id="rCap">10.000 €</b> a marzo 2023, oggi il tuo conto varrebbe</p>
+          <div class="r-big num" id="sFinal">–</div>
+          <p class="r-gain"><b class="num" id="sProfit">–</b> <span class="num" id="sPct">–</span></p>
+
+          <div class="chart" id="chart">
+            <div class="ylab" id="yLab"></div>
+            <svg class="eq" id="eqSvg" viewBox="0 0 1000 300" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <linearGradient id="eqFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F1FB9B" stop-opacity=".28"/><stop offset="1" stop-color="#F1FB9B" stop-opacity="0"/></linearGradient>
+                <clipPath id="eqClip"><rect id="eqClipRect" x="0" y="-10" width="0" height="320"/></clipPath>
+              </defs>
+              <g id="eqGrid"></g>
+              <line id="eqBase" x1="0" x2="1000" class="base"/>
+              <g clip-path="url(#eqClip)"><path id="eqArea" fill="url(#eqFill)"/><path id="eqLine" class="line"/></g>
+              <line id="eqCross" class="cross" y1="0" y2="300" x1="-10" x2="-10"/>
+            </svg>
+            <div class="dot" id="eqDot"></div>
+            <div class="tip" id="eqTip" role="status"></div>
+            <svg class="uw" id="uwSvg" viewBox="0 0 1000 60" preserveAspectRatio="none" aria-hidden="true"><g clip-path="url(#eqClip)"><path id="uwArea"/></g></svg>
+            <div class="xlab" id="xLab"></div>
+            <p class="sr-only" id="chartSummary"></p>
+          </div>
+
+          <div class="r-foot">
+            <div class="r-mini"><span>Calo massimo dal picco</span><b class="num" id="sDD">–</b></div>
+            <div class="r-mini"><span>Mesi positivi</span><b class="num" id="sMonths">–</b><small id="sWorst" hidden></small></div>
+            <label class="switch"><input type="checkbox" id="netToggle"><span class="knob"></span><span>Al netto della commissione del 30%</span></label>
+            <button class="r-change" id="rChange" type="button">Cambia importo</button>
+          </div>
+
+          <div class="r-cta">
+            <p>Vuoi che il tuo conto lavori così?</p>
+            <a class="btn btn-lime" href="https://t.me/tradingcultfx" target="_blank" rel="noopener">Entra nel canale Telegram <span class="arrow">→</span></a>
+          </div>
+        </div>
+
+        <!-- controlli originali della simulazione: restano per lo script, nascosti -->
+        <div hidden>
+          <span id="capVal"></span><input type="range" id="capRange" min="1000" max="100000" step="1000" value="10000">
+          <div id="period"><button data-p="all" class="on">Da mar 2023</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 · Anno per anno -->
+  <section class="sec alt years" id="anni">
+    <div class="wrap">
+      <div class="sh" data-r><span class="eyebrow">Anno per anno</span><h2 class="big">Ogni anno, <span class="it">in positivo.</span></h2>
+        <p class="lead">Il rendimento lordo del conto, mese per mese e anno per anno, sommando le due strategie.</p></div>
+      <div class="heatbox mbox" data-r style="--d:.2s">
+        <div class="m-head">
+          <span class="m-k">Mese per mese</span>
+          <p class="m-big"><b class="num" id="mPos">–</b> mesi su <span class="num" id="mTot">–</span> chiusi in positivo</p>
+        </div>
+        <div class="mchart" id="mChart" role="img" aria-label="Rendimento lordo del conto mese per mese">
+          <div class="mbars" id="mBars"></div>
+          <div class="myears" id="mYears" aria-hidden="true"></div>
+          <div class="mtip" id="mTip" aria-hidden="true"></div>
+        </div>
+        <p class="hh-note">Rendimento lordo mensile del conto. <span class="m-hint">Passa sopra una barra per leggere il mese.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06b · Oro contro Trading Cult: lo stesso periodo, lo stesso capitale -->
+  <section class="sec" id="oro-vs">
+    <div class="wrap">
+      <div class="sh" data-r><span class="eyebrow">Oro o Trading Cult</span><h2 class="big">L'oro è raddoppiato. <span class="it">Noi di più.</span></h2>
+        <p class="lead">Dal 1° gennaio 2024 chi ha comprato oro ha quasi raddoppiato il capitale. Nello stesso periodo il nostro conto ha reso <b>2,6 volte tanto</b>, già tolta la nostra quota.</p></div>
+      <div class="gvs" data-r style="--d:.15s">
+        <span class="gvs-k">10.000 € investiti il 1° gennaio 2024</span>
+        <div class="gvs-row them" style="--w:.382">
+          <div class="gvs-l"><b>Comprare oro</b><span>e tenerlo fermo</span></div>
+          <div class="gvs-bar" aria-hidden="true"><i style="--d:.4s"></i></div>
+          <div class="gvs-v"><b class="num">+99%</b><span>19.870 €</span></div>
+        </div>
+        <div class="gvs-row us" style="--w:1">
+          <div class="gvs-l"><b>Trading Cult</b><span>al netto del 30% sui profitti</span></div>
+          <div class="gvs-bar" aria-hidden="true"><i style="--d:.7s"></i></div>
+          <div class="gvs-v"><b class="num">+258%</b><span>35.820 €</span></div>
+        </div>
+        <div class="gvs-foot"><span class="gvs-x"><b>2,6×</b> il rendimento dell'oro</span><span>Prima della nostra quota: <b>+505%</b></span></div>
+        <p class="hh-note">Oro: da 2.062,90 $ l'oncia (29 dicembre 2023) a circa 4.100 $ (ottobre 2026). Trading Cult: rendimento del conto dal 1° gennaio 2024 al 12 ottobre 2026, con la quota del 30% sui profitti calcolata mese per mese.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 · Quanto costa: tre numeri -->
+  <section class="sec alt" id="costi">
+    <div class="wrap">
+      <div class="sh" data-r><span class="eyebrow">Quanto costa</span><h2 class="big">Se non guadagni tu, <span class="it">non guadagniamo noi.</span></h2></div>
+      <div class="figs">
+        <div class="fig" data-r style="--d:.05s"><span class="k">Commissione</span><span class="v num acc"><span data-count="30">0</span>%</span><p>La nostra unica commissione, calcolata solo sui profitti del tuo conto.</p></div>
+        <div class="fig" data-r style="--d:.15s"><span class="k">Abbonamento</span><span class="v num"><span data-count="0" data-from="99">99</span> €</span><p>Nessun abbonamento e nessun costo d'ingresso. Se il conto non guadagna, non paghi.</p></div>
+        <div class="fig" data-r style="--d:.25s"><span class="k">Il tuo capitale</span><span class="v num"><span data-count="100">0</span>%</span><p>Resta sul conto intestato a te presso il broker. Trading Cult non custodisce fondi.</p></div>
+      </div>
+      <div class="example" data-r style="--d:.3s">
+        <span class="t">Esempio di calcolo</span>
+        <div class="s"><span>Profitto del periodo</span><b class="num">1.000 €</b></div><span class="arr" aria-hidden="true">→</span>
+        <div class="s"><span>Commissione 30%</span><b class="num">− 300 €</b></div><span class="arr" aria-hidden="true">→</span>
+        <div class="s last"><span>Resta a te</span><b class="num">700 €</b></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 · Chiusura -->
+  <section class="sec end" id="entra">
+    <div class="wrap">
+      <span class="eyebrow" data-r>La cerchia</span>
+      <h2 class="big" data-r style="--d:.1s">Copia <span class="it">e basta.</span></h2>
+      <p class="lead" data-r style="--d:.2s; text-align:center">Nel canale trovi gli aggiornamenti, il link per aprire il conto e le persone che ti rispondono.</p>
+      <a class="btn btn-lime" data-r style="--d:.3s" href="https://t.me/tradingcultfx" target="_blank" rel="noopener">Entra su Telegram <span class="arrow">→</span></a>
+      <div class="meta" data-r style="--d:.4s">
+        <span class="qr"><img src="assets/qr-telegram.svg" alt="QR del canale Telegram @tradingcultfx"><span>Da computer, inquadra il codice:<br><b>@tradingcultfx</b></span></span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="dock" id="dock" aria-hidden="true"><img src="assets/logo.svg" alt=""><span>Copy trading solo sull'oro</span><a class="btn btn-lime" href="https://t.me/tradingcultfx" target="_blank" rel="noopener" tabindex="-1">Entra nel canale</a></div>
+
+<footer>
+  <div class="wrap">
+    <div class="top">
+      <img src="assets/logo.svg" alt="trading cult">
+      <div class="fl">
+        <a href="https://t.me/tradingcultfx" target="_blank" rel="noopener">Telegram</a>
+        <a href="#come-funziona">Come funziona</a>
+      </div>
+    </div>
+    <p class="risk"><b>Avvertenza sul rischio.</b> I CFD sono strumenti complessi e comportano un rischio elevato di perdere denaro rapidamente a causa della leva finanziaria. Una percentuale significativa di conti di investitori al dettaglio subisce perdite quando fa trading con CFD. Valuta se comprendi il funzionamento dei CFD e se puoi permetterti di correre l'elevato rischio di perdere il tuo denaro. I risultati passati non sono indicativi di quelli futuri. Il copy trading non elimina il rischio: le perdite del conto del trader si riflettono sul tuo conto. Trading Cult non è un broker e non custodisce fondi: i conti sono aperti presso il broker, secondo le sue condizioni. Questo sito non costituisce consulenza finanziaria.</p>
+    <p class="copy">© 2026 Trading Cult</p>
+  </div>
+</footer>
+
+<script>
+/* Hero «Oro liquido» e prezzo dell'oro dal vivo */
+(() => {
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const hero = document.getElementById("hero");
+  setTimeout(() => hero.classList.add("on"), 30);
+
+  /* ---------- Oro liquido (WebGL) ---------- */
+  const cv = document.getElementById("gold");
+  const gl = cv.getContext("webgl", { antialias: false, premultipliedAlpha: false });
+  const ripples = []; // [x, y, t0, forza] in coordinate 0..1
+  const mouse = { x: .7, y: .6, tx: .7, ty: .6, on: 0, ton: 0 };
+  let t0 = performance.now(), visible = true, raf = 0;
+
+  if (gl) {
+    const vs = "attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}";
+    const fs = `
+precision highp float;
+uniform vec2 res; uniform float time; uniform vec3 mouse; uniform vec4 rip[6];
+float hash(vec2 p){ p=fract(p*vec2(123.34,456.21)); p+=dot(p,p+45.32); return fract(p.x*p.y); }
+float noise(vec2 p){ vec2 i=floor(p), f=fract(p); vec2 u=f*f*(3.-2.*f);
+  return mix(mix(hash(i),hash(i+vec2(1,0)),u.x), mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),u.x), u.y); }
+float fbm(vec2 p){ float v=0., a=.5; mat2 r=mat2(.8,.6,-.6,.8); for(int i=0;i<4;i++){ v+=a*noise(p); p=r*p*2.02+3.1; a*=.45; } return v; }
+float height(vec2 uv){
+  vec2 p = uv*vec2(res.x/res.y,1.)*.8;
+  float t = time*.045;
+  vec2 q = vec2(fbm(p+vec2(0.,t)), fbm(p+vec2(5.2,1.3)-t));
+  vec2 r = vec2(fbm(p+3.*q+vec2(1.7,9.2)+t*1.3), fbm(p+3.*q+vec2(8.3,2.8)-t));
+  float h = fbm(p+1.35*r);
+  vec2 asp = vec2(res.x/res.y,1.);
+  // conca morbida sotto il puntatore
+  float dm = length((uv-mouse.xy)*asp);
+  h -= .16*mouse.z*exp(-dm*dm*28.);
+  // onde dei clic
+  for(int i=0;i<6;i++){ vec4 R=rip[i]; if(R.w<=0.) continue;
+    float d=length((uv-R.xy)*asp), a=time-R.z;
+    h += R.w*.09*sin(d*34.-a*7.)*exp(-d*3.2)*exp(-a*.9)*smoothstep(0.,.08,a*.6-d+.05); }
+  return h;
+}
+void main(){
+  vec2 uv = gl_FragCoord.xy/res;
+  float e = 1.5/res.y;
+  float h = height(uv), hx = height(uv+vec2(e,0.)), hy = height(uv+vec2(0.,e));
+  vec3 n = normalize(vec3((h-hx)*9., (h-hy)*9., e*16.));
+  vec3 v = vec3(0.,0.,1.);
+  vec3 l = normalize(vec3(.55+.25*sin(time*.11), .65, .7));
+  vec3 rf = reflect(-v, n);
+  // oro vero: ombre brune, toni medi giallo-arancio, e strisce di luce dai bordi netti
+  // (sono i riflessi netti a far leggere la superficie come metallo liquido e non come fumo)
+  float k = rf.y*.6+rf.x*.45+.38, k2 = -rf.x*.7+rf.y*.35;
+  vec3 env = mix(vec3(.07,.04,.008), vec3(.82,.62,.22), smoothstep(-.15,.9,k));
+  env += vec3(1.,.9,.6)*smoothstep(.66,.7,k)*(1.-smoothstep(.79,.84,k))*.6;
+  env += vec3(1.,.78,.45)*smoothstep(.3,.34,k2)*(1.-smoothstep(.4,.45,k2))*.4;
+  env += vec3(1.,.95,.75)*pow(max(dot(rf,l),0.),40.)*.9;
+  float fres = pow(1.-max(dot(n,v),0.),3.);
+  vec3 base = mix(vec3(.12,.06,.01), vec3(.62,.4,.1), smoothstep(.25,.85,h));
+  // il metallo tinge i riflessi del proprio colore (metallo, non plastica)
+  vec3 col = base*.3 + env*vec3(1.,.88,.62)*(.95+fres*1.2);
+  col += vec3(1.,.97,.85)*pow(max(dot(reflect(-l,n),v),0.),160.)*1.2;
+  // vignetta: più scuro a sinistra e in alto, dove sta il testo
+  // orizzontale: luce a destra, testo a sinistra; verticale (telefono): luce in alto, testo sotto
+  float port = step(res.x, res.y);
+  float vl = mix(.35,1.,smoothstep(.0,.75,uv.x*.8+(1.-uv.y)*.2+.15));
+  float vp = mix(.3,1.,smoothstep(.25,.85,uv.y));
+  col *= mix(vl, vp*1.05, port);
+  col *= smoothstep(1.25,.25,length((uv-mix(vec2(.72,.42),vec2(.6,.8),port))*vec2(1.,1.25)));
+  // niente colori bruciati: dove la luce supera il bianco l'oro resta oro e sfuma verso un bianco caldo
+  float m = max(col.r, max(col.g, col.b));
+  col = mix(col*min(1., 1./max(m, 1e-3)), vec3(1.,.96,.84), smoothstep(.85,1.6,m)*.75);
+  gl_FragColor = vec4(pow(col, vec3(.95)), 1.);
+}`;
+    const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw gl.getShaderInfoLog(s); return s };
+    try {
+      const pr = gl.createProgram(); gl.attachShader(pr, sh(gl.VERTEX_SHADER, vs)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, fs)); gl.linkProgram(pr); gl.useProgram(pr);
+      const b = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+      const loc = gl.getAttribLocation(pr, "p"); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+      const U = n => gl.getUniformLocation(pr, n), uRes = U("res"), uTime = U("time"), uMouse = U("mouse"), uRip = U("rip");
+      // risoluzione ridotta: il liquido è morbido, così resta fluido anche su portatili e telefoni
+      const size = () => { const s = Math.min(1, 1100 / Math.max(innerWidth, 1)) * Math.min(1.5, devicePixelRatio || 1) * .95; cv.width = Math.round(cv.clientWidth * s); cv.height = Math.round(cv.clientHeight * s); gl.viewport(0, 0, cv.width, cv.height) };
+      size(); addEventListener("resize", size);
+      const draw = now => {
+        raf = 0; if (!visible) return;
+        const t = (now - t0) / 1000;
+        mouse.x += (mouse.tx - mouse.x) * .06; mouse.y += (mouse.ty - mouse.y) * .06; mouse.on += (mouse.ton - mouse.on) * .05;
+        gl.uniform2f(uRes, cv.width, cv.height); gl.uniform1f(uTime, reduce ? 20 : t + 20);
+        gl.uniform3f(uMouse, mouse.x, mouse.y, mouse.on);
+        const arr = new Float32Array(24); ripples.slice(-6).forEach((r, i) => arr.set([r[0], r[1], r[2] + 20, r[3]], i * 4)); gl.uniform4fv(uRip, arr);
+        gl.drawArrays(gl.TRIANGLES, 0, 3);
+        if (!reduce) raf = requestAnimationFrame(draw);
+      };
+      const wake = () => { if (!raf && visible) raf = requestAnimationFrame(draw) };
+      hero.addEventListener("pointermove", e => { const r = cv.getBoundingClientRect(); mouse.tx = (e.clientX - r.left) / r.width; mouse.ty = 1 - (e.clientY - r.top) / r.height; mouse.ton = 1; if (reduce) wake() });
+      hero.addEventListener("pointerleave", () => { mouse.ton = 0 });
+      hero.addEventListener("pointerdown", e => {
+        if (e.target.closest("a, button")) return;
+        const r = cv.getBoundingClientRect(); ripples.push([(e.clientX - r.left) / r.width, 1 - (e.clientY - r.top) / r.height, (performance.now() - t0) / 1000, 1]);
+        if (ripples.length > 6) ripples.shift(); if (reduce) wake();
+      });
+      // senza mouse, ogni tanto una goccia lontana dal testo
+      if (!reduce) setInterval(() => { if (mouse.ton < .5 && visible) { ripples.push([.6 + Math.random() * .32, .25 + Math.random() * .5, (performance.now() - t0) / 1000, .55]); if (ripples.length > 6) ripples.shift() } }, 5200);
+      new IntersectionObserver(es => { visible = es[0].isIntersecting; wake() }).observe(hero);
+      wake();
+      // all'apertura cade una goccia sopra la card del prezzo: l'onda fa capire che l'oro è interattivo
+      if (!reduce) setTimeout(() => {
+        const port = innerWidth < innerHeight, px = port ? .66 : .78, py = port ? .17 : .27;
+        const d = document.createElement("span"); d.className = "drop"; d.style.left = px * 100 + "%"; d.style.top = py * 100 + "%"; hero.appendChild(d);
+        d.addEventListener("animationend", () => {
+          d.remove(); const now = (performance.now() - t0) / 1000;
+          ripples.push([px, 1 - py, now, 1.5]); setTimeout(() => ripples.push([px, 1 - py, (performance.now() - t0) / 1000, .6]), 380);
+          while (ripples.length > 6) ripples.shift();
+          const hint = hero.querySelector(".hint"); if (hint) { hint.classList.add("ping"); setTimeout(() => hint.classList.remove("ping"), 2200) }
+        }, { once: true });
+      }, 1300);
+    } catch (err) { console.warn("Oro liquido non disponibile:", err) }
+  }
+
+  /* ---------- Prezzo dell'oro dal vivo ---------- */
+  const elP = document.getElementById("tkPrice"), elC = document.getElementById("tkChg"), st = document.getElementById("tkStatus"), sp = document.getElementById("tkSpark");
+  const fmt = n => { const [a, b] = n.toFixed(2).split("."); return a.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "," + b };
+  const hist = []; let first = null, last = null, live = false;
+  const setStatus = (ok) => { st.classList.toggle("is-live", ok); st.lastElementChild.textContent = ok ? "Dal vivo" : "Dimostrativo" };
+  function show(p) {
+    if (first === null) first = p;
+    const dir = last === null ? 0 : Math.sign(p - last); last = p;
+    elP.textContent = fmt(p); elP.classList.remove("up", "dn"); if (dir) { void elP.offsetWidth; elP.classList.add(dir > 0 ? "up" : "dn"); setTimeout(() => elP.classList.remove("up", "dn"), 900) }
+    const d = p - first, pc = d / first * 100;
+    elC.textContent = `${d >= 0 ? "+" : "−"}${fmt(Math.abs(d))} (${d >= 0 ? "+" : "−"}${Math.abs(pc).toFixed(2).replace(".", ",")}%) da quando sei qui`;
+    hist.push(p); if (hist.length > 60) hist.shift(); spark();
+  }
+  function spark() {
+    const dpr = Math.min(2, devicePixelRatio || 1), w = sp.clientWidth, h = sp.clientHeight; sp.width = w * dpr; sp.height = h * dpr;
+    const c = sp.getContext("2d"); c.setTransform(dpr, 0, 0, dpr, 0, 0);
+    if (hist.length < 2) { c.strokeStyle = "rgba(241,251,155,.35)"; c.setLineDash([3, 5]); c.beginPath(); c.moveTo(3, h / 2); c.lineTo(w - 3, h / 2); c.stroke(); c.setLineDash([]); c.fillStyle = "#F1FB9B"; c.beginPath(); c.arc(w - 3, h / 2, 3, 0, 7); c.fill(); return }
+    const lo = Math.min(...hist), hi = Math.max(...hist), rg = hi - lo || 1;
+    const X = i => i / (hist.length - 1) * (w - 6) + 3, Y = v => h - 4 - (v - lo) / rg * (h - 8);
+    const g = c.createLinearGradient(0, 0, 0, h); g.addColorStop(0, "rgba(241,251,155,.25)"); g.addColorStop(1, "rgba(241,251,155,0)");
+    c.beginPath(); hist.forEach((v, i) => i ? c.lineTo(X(i), Y(v)) : c.moveTo(X(i), Y(v))); c.lineTo(X(hist.length - 1), h); c.lineTo(X(0), h); c.fillStyle = g; c.fill();
+    c.beginPath(); hist.forEach((v, i) => i ? c.lineTo(X(i), Y(v)) : c.moveTo(X(i), Y(v))); c.strokeStyle = "#F1FB9B"; c.lineWidth = 1.6; c.stroke();
+    c.fillStyle = "#F1FB9B"; c.beginPath(); c.arc(X(hist.length - 1), Y(hist[hist.length - 1]), 3, 0, 7); c.fill();
+  }
+  async function fetchLive() {
+    try {
+      const r = await fetch("https://api.gold-api.com/price/XAU", { cache: "no-store" });
+      const j = await r.json(); if (!j || typeof j.price !== "number") throw 0;
+      if (!live) { live = true; setStatus(true) }
+      show(j.price); return true;
+    } catch (e) { return false }
+  }
+  // se la fonte non risponde (o la pagina non può raggiungerla) il prezzo continua in modo dimostrativo
+  let demo = null;
+  function startDemo(from) {
+    if (demo) return; setStatus(false); let p = from || 4040;
+    show(p); demo = setInterval(() => { p += (Math.random() - .5) * 1.6; show(p) }, 1500);
+  }
+  fetchLive().then(ok => {
+    if (ok) setInterval(async () => { if (!(await fetchLive()) && !demo) startDemo(last) }, 10000);
+    else startDemo();
+  });
+  addEventListener("resize", spark);
+})();
+</script>
+<script>
+const PROOF = {"d":[["2023-03-17",1000,0],["2023-03-20",973.06,2.694],["2023-03-21",967.91,3.209],["2023-03-22",969.51,3.049],["2023-03-27",970.66,3.007],["2023-03-28",958.67,4.133],["2023-03-29",955.35,4.465],["2023-04-03",960.75,4.285],["2023-04-04",991.41,4.277],["2023-04-10",990.8,1.059],["2023-04-11",995.32,0.768],["2023-04-12",997.72,0.228],["2023-04-13",1005.32,0.199],["2023-04-14",984.23,2.323],["2023-04-17",985.43,2.204],["2023-04-18",994.43,2.026],["2023-04-19",1004.03,1.073],["2023-04-21",1001.03,0.656],["2023-04-24",979.58,2.785],["2023-04-26",980.08,2.735],["2023-04-27",980.78,2.791],["2023-04-28",979.77,2.766],["2023-05-04",990.97,2.607],["2023-05-05",987.97,1.952],["2023-05-08",992.17,1.654],["2023-05-09",980.52,2.691],["2023-05-10",979.54,2.789],["2023-05-12",982.05,2.71],["2023-05-15",989.75,2.381],["2023-05-16",989.65,2.073],["2023-05-17",983.99,2.347],["2023-05-18",994.98,2.13],["2023-05-22",979.98,2.745],["2023-05-23",989.18,2.944],["2023-05-25",991.58,1.594],["2023-05-26",992.5,2.104],["2023-05-30",996.01,1.154],["2023-05-31",984.01,2.345],["2023-06-02",968.8,3.855],["2023-06-05",966.8,4.053],["2023-06-06",959.4,4.787],["2023-06-08",954.88,5.236],["2023-06-12",956.08,5.434],["2023-06-13",965.08,5.176],["2023-06-14",971.76,4.367],["2023-06-15",981.76,3.759],["2023-06-16",983.56,2.39],["2023-06-19",967.76,4.077],["2023-06-20",966.39,4.094],["2023-06-21",966.68,4.321],["2023-06-22",964.99,4.233],["2023-06-23",947.68,5.951],["2023-06-26",948.63,5.856],["2023-06-27",941.78,6.536],["2023-06-28",943.41,6.603],["2023-06-29",931.41,7.565],["2023-07-03",922.43,8.456],["2023-07-06",934.11,8.367],["2023-07-07",938.89,7.537],["2023-07-12",933.85,7.323],["2023-07-19",932.59,7.448],["2023-07-21",938.59,7.21],["2023-07-24",935.59,7.15],["2023-07-25",929.58,7.747],["2023-07-26",917.58,8.938],["2023-07-27",922.86,8.461],["2023-07-28",922.74,8.426],["2023-07-31",931.54,8.267],["2023-08-02",921.96,8.503],["2023-08-03",920.04,8.757],["2023-08-04",922.44,8.455],["2023-08-07",916.75,9.02],["2023-08-08",928.55,8.861],["2023-08-09",930.95,7.849],["2023-08-10",932.54,7.559],["2023-08-11",938.57,7.569],["2023-08-14",938.97,7.053],["2023-08-15",936.97,7.013],["2023-08-16",938.1,6.901],["2023-08-23",932.1,7.497],["2023-08-25",921.1,8.588],["2023-08-28",917.96,8.9],["2023-08-29",919.1,8.787],["2023-08-30",916.5,9.045],["2023-09-01",919.5,8.747],["2023-09-04",916.5,9.045],["2023-09-05",912.83,9.487],["2023-09-06",898.83,10.798],["2023-09-07",908.3,10.573],["2023-09-08",913.1,9.7],["2023-09-11",902.74,10.41],["2023-09-12",905.74,10.113],["2023-09-13",891.63,11.601],["2023-09-14",902.32,11.666],["2023-09-15",900.28,11.276],["2023-09-18",905.07,10.417],["2023-09-19",904.99,10.266],["2023-09-20",911.76,10.362],["2023-09-21",914.6,9.714],["2023-09-22",915.67,9.435],["2023-09-25",928.07,9.491],["2023-09-26",920.17,8.681],["2023-09-27",927.57,8.664],["2023-09-28",926.9,8.077],["2023-09-29",912.32,9.757],["2023-10-02",921.69,9.063],["2023-10-03",917.1,9.146],["2023-10-04",919.72,8.908],["2023-10-05",919.73,8.813],["2023-10-06",893.35,11.342],["2023-10-09",897.22,11.21],["2023-10-10",898.11,11.044],["2023-10-11",887.39,11.934],["2023-10-12",882.27,12.442],["2023-10-13",880.36,12.631],["2023-10-16",870.84,13.723],["2023-10-17",857.46,14.904],["2023-10-18",858.33,15.135],["2023-10-19",863.48,14.576],["2023-10-20",874.12,14.505],["2023-10-23",896.55,13.747],["2023-10-24",893.21,11.43],["2023-10-25",878.73,13.261],["2023-10-26",892.01,12.661],["2023-10-27",898.93,11.325],["2023-10-30",904.15,10.964],["2023-10-31",892.23,11.801],["2023-11-01",885.49,12.653],["2023-11-02",890.65,11.84],["2023-11-03",887.05,11.968],["2023-11-06",902.36,12.166],["2023-11-07",902.11,10.53],["2023-11-08",907.83,10.419],["2023-11-09",910.13,9.727],["2023-11-10",913.95,9.298],["2023-11-13",912.6,9.796],["2023-11-14",918.91,10.325],["2023-11-15",915.23,9.171],["2023-11-16",916.85,9.01],["2023-11-17",928.91,8.772],["2023-11-20",951.34,7.516],["2023-11-21",966.48,5.349],["2023-11-22",963.48,4.797],["2023-11-23",964.47,4.581],["2023-11-24",946.28,6.089],["2023-11-27",951.13,5.792],["2023-11-28",959.04,5.809],["2023-11-29",944.7,6.405],["2023-11-30",946.86,6.256],["2023-12-01",946.01,6.33],["2023-12-04",961.92,5.577],["2023-12-05",976.29,4.339],["2023-12-06",989.14,2.891],["2023-12-07",995.52,1.898],["2023-12-08",1010.05,1.044],["2023-12-11",1014.99,0.957],["2023-12-12",1026.63,0.004],["2023-12-13",1039.36,0.508],["2023-12-14",1045.65,0.151],["2023-12-15",1043.21,0.857],["2023-12-18",1029.07,1.756],["2023-12-19",1032.27,1.69],["2023-12-20",1052.33,1.336],["2023-12-21",1041.79,1.178],["2023-12-22",1023.73,2.891],["2023-12-26",1023.87,2.878],["2023-12-27",1032.34,3.026],["2023-12-28",1024.86,2.784],["2023-12-29",1042.82,2.735],["2024-01-02",1033.18,1.995],["2024-01-03",1035.96,3.133],["2024-01-04",1034.55,1.98],["2024-01-05",1056.18,1.637],["2024-01-08",1044.51,1.478],["2024-01-09",1047.8,1.439],["2024-01-10",1051.88,1.053],["2024-01-11",1068.14,1.025],["2024-01-12",1051.35,1.572],["2024-01-15",1044.22,2.239],["2024-01-16",1038.58,2.767],["2024-01-17",1062.27,2.871],["2024-01-18",1057.85,0.963],["2024-01-19",1092.16,2.06],["2024-01-22",1104.06,0.046],["2024-01-23",1109.49,0.322],["2024-01-24",1104.28,0.674],["2024-01-25",1091.87,2.928],["2024-01-26",1085.87,2.768],["2024-01-29",1082.17,3.093],["2024-01-30",1088.2,2.523],["2024-01-31",1063.82,4.313],["2024-02-01",1068.2,4.583],["2024-02-02",1043.52,6.139],["2024-02-05",1041.55,6.502],["2024-02-06",1045.73,6.491],["2024-02-07",1047.09,6.09],["2024-02-08",1038.87,6.557],["2024-02-09",1029.98,7.364],["2024-02-12",1068.66,7.141],["2024-02-13",1193.24,4.0],["2024-02-14",1191.56,0.287],["2024-02-15",1191.12,0.324],["2024-02-16",1193.84,0.198],["2024-02-19",1201.82,0.008],["2024-02-20",1212.45,0.266],["2024-02-21",1217.86,0.132],["2024-02-22",1213.05,0.49],["2024-02-26",1217.76,0.199],["2024-02-27",1248.29,0.075],["2024-02-28",1242.29,1.202],["2024-02-29",1251.08,0.649],["2024-03-01",1265.18,0.456],["2024-03-04",1269.98,0.88],["2024-03-05",1273.85,0.364],["2024-03-06",1265.85,0.942],["2024-03-07",1275.45,0.534],["2024-03-08",1273.48,0.391],["2024-03-11",1263.83,1.106],["2024-03-12",1362.76,0.966],["2024-03-13",1356.64,1.129],["2024-03-14",1355.03,1.22],["2024-03-15",1364.76,1.15],["2024-03-18",1394.29,0.926],["2024-03-19",1391.29,0.859],["2024-03-20",1401.5,0.431],["2024-03-21",1389.75,1.266],["2024-03-22",1386.18,1.52],["2024-03-25",1396.27,1.425],["2024-03-26",1402.29,1.291],["2024-03-27",1378.63,2.966],["2024-03-28",1375.86,2.866],["2024-04-01",1378.13,3.174],["2024-04-02",1382.71,2.854],["2024-04-03",1374.79,3.054],["2024-04-04",1356.58,5.074],["2024-04-05",1375.73,4.283],["2024-04-08",1370.2,4.02],["2024-04-09",1396.5,3.154],["2024-04-10",1403.5,1.874],["2024-04-11",1407.01,0.839],["2024-04-12",1439.43,0.639],["2024-04-15",1443.85,1.159],["2024-04-16",1439.24,0.657],["2024-04-17",1454.06,0.481],["2024-04-18",1445.77,0.987],["2024-04-19",1439.87,1.804],["2024-04-22",1408.4,3.346],["2024-04-23",1388.34,4.722],["2024-04-24",1389.63,4.823],["2024-04-25",1398.33,4.771],["2024-04-26",1407.96,3.656],["2024-04-29",1403.31,3.695],["2024-04-30",1414.14,3.967],["2024-05-01",1445.29,2.746],["2024-05-02",1469.41,0.485],["2024-05-03",1472.55,0.513],["2024-05-06",1486.3,0.578],["2024-05-07",1496.36,0.458],["2024-05-08",1484.2,1.254],["2024-05-09",1524.28,0.72],["2024-05-10",1495.76,1.96],["2024-05-13",1492.92,2.146],["2024-05-14",1502.06,1.791],["2024-05-15",1488.66,2.425],["2024-05-16",1498.88,2.163],["2024-05-17",1491.45,2.242],["2024-05-20",1495.57,2.845],["2024-05-21",1505.56,2.103],["2024-05-22",1527.26,1.378],["2024-05-23",1529.12,2.356],["2024-05-24",1539.9,0.657],["2024-05-27",1553.82,0.054],["2024-05-28",1553.04,0.05],["2024-05-29",1559.23,0.439],["2024-05-30",1559.61,0.415],["2024-05-31",1562.47,0.366],["2024-06-03",1572.0,0.368],["2024-06-04",1568.17,0.71],["2024-06-05",1584.25,0.36],["2024-06-06",1583.94,0.13],["2024-06-07",1561.7,1.463],["2024-06-10",1590.68,1.211],["2024-06-11",1570.8,1.27],["2024-06-12",1566.32,1.531],["2024-06-13",1558.04,2.052],["2024-06-14",1560.71,1.991],["2024-06-17",1535.07,3.517],["2024-06-18",1545.07,3.622],["2024-06-19",1534.27,3.93],["2024-06-20",1552.24,3.467],["2024-06-21",1553.61,2.33],["2024-06-24",1569.44,2.103],["2024-06-25",1533.94,4.184],["2024-06-26",1533.44,3.598],["2024-06-27",1534.71,3.519],["2024-06-28",1528.23,3.926],["2024-07-01",1534.52,3.775],["2024-07-02",1539.18,3.597],["2024-07-03",1544.75,3.238],["2024-07-04",1545.48,2.842],["2024-07-05",1550.3,2.904],["2024-07-08",1554.74,3.353],["2024-07-09",1549.13,2.718],["2024-07-10",1547.19,2.772],["2024-07-11",1539.29,3.991],["2024-07-12",1547.46,3.512],["2024-07-15",1558.79,2.977],["2024-07-16",1538.45,3.315],["2024-07-17",1541.4,3.372],["2024-07-18",1557.72,3.085],["2024-07-19",1571.63,2.075],["2024-07-22",1575.82,1.32],["2024-07-23",1578.33,1.029],["2024-07-24",1575.8,0.935],["2024-07-25",1542.33,3.409],["2024-07-26",1560.84,2.326],["2024-07-29",1554.08,2.553],["2024-07-30",1530.84,4.027],["2024-07-31",1537.9,3.865],["2024-08-01",1551.24,3.819],["2024-08-02",1576.23,2.656],["2024-08-05",1563.7,2.172],["2024-08-06",1576.03,2.404],["2024-08-07",1514.31,5.047],["2024-08-08",1507.59,5.756],["2024-08-09",1520.03,5.443],["2024-08-12",1524.97,4.565],["2024-08-13",1522.45,4.787],["2024-08-14",1509.99,5.365],["2024-08-15",1519.29,5.234],["2024-08-16",1534.3,4.739],["2024-08-19",1532.62,4.053],["2024-08-20",1547.77,4.136],["2024-08-21",1546.07,3.289],["2024-08-22",1561.86,3.322],["2024-08-23",1558.07,2.402],["2024-08-26",1553.32,2.601],["2024-08-27",1574.0,3.025],["2024-08-28",1570.66,2.0],["2024-08-30",1560.61,2.294],["2024-09-02",1553.61,2.592],["2024-09-03",1563.45,2.824],["2024-09-04",1572.52,1.999],["2024-09-05",1530.28,4.046],["2024-09-06",1529.42,4.1],["2024-09-09",1529.85,4.261],["2024-09-10",1505.05,5.628],["2024-09-11",1504.05,5.69],["2024-09-12",1500.51,6.225],["2024-09-13",1503.71,6.123],["2024-09-16",1512.99,5.531],["2024-09-17",1533.37,5.591],["2024-09-18",1563.81,3.701],["2024-09-19",1554.93,2.5],["2024-09-20",1531.98,3.939],["2024-09-23",1538.59,3.941],["2024-09-24",1537.43,3.632],["2024-09-25",1545.6,3.693],["2024-09-26",1548.77,3.115],["2024-09-27",1541.31,3.354],["2024-09-30",1539.66,3.91],["2024-10-01",1549.57,3.059],["2024-10-02",1544.83,3.133],["2024-10-03",1549.43,4.232],["2024-10-04",1552.56,2.824],["2024-10-07",1558.16,2.81],["2024-10-08",1581.26,2.104],["2024-10-09",1577.03,1.14],["2024-10-10",1564.76,1.884],["2024-10-11",1569.97,1.806],["2024-10-14",1562.37,2.033],["2024-10-15",1563.73,2.324],["2024-10-16",1567.98,1.827],["2024-10-17",1563.51,1.962],["2024-10-18",1576.32,1.772],["2024-10-21",1553.54,2.587],["2024-10-22",1556.14,2.676],["2024-10-23",1530.02,4.062],["2024-10-24",1533.01,4.152],["2024-10-25",1523.77,4.691],["2024-10-28",1554.11,4.955],["2024-10-29",1568.19,2.677],["2024-10-30",1561.85,2.094],["2024-10-31",1598.43,1.953],["2024-11-01",1597.16,0.351],["2024-11-05",1601.26,0.425],["2024-11-06",1590.01,1.196],["2024-11-07",1589.99,1.32],["2024-11-08",1600.85,1.011],["2024-11-11",1669.36,1.527],["2024-11-12",1671.31,1.185],["2024-11-13",1707.05,0.868],["2024-11-14",1701.58,0.629],["2024-11-15",1716.15,0.339],["2024-11-18",1693.41,1.828],["2024-11-19",1685.39,2.732],["2024-11-20",1702.62,1.731],["2024-11-21",1683.2,2.126],["2024-11-22",1676.09,2.534],["2024-11-25",1664.8,3.544],["2024-11-26",1694.39,3.395],["2024-11-27",1722.92,1.557],["2024-11-28",1732.69,0.269],["2024-11-29",1739.76,0],["2024-12-02",1733.33,0.475],["2024-12-03",1729.54,0.809],["2024-12-04",1745.97,0.723],["2024-12-05",1747.4,1.302],["2024-12-06",1750.2,0.604],["2024-12-09",1737.59,1.32],["2024-12-10",1741.19,1.218],["2024-12-11",1672.68,5.668],["2024-12-12",1675.46,4.848],["2024-12-13",1696.15,3.673],["2024-12-16",1698.42,3.787],["2024-12-17",1712.92,3.194],["2024-12-18",1729.0,2.653],["2024-12-19",1710.99,2.83],["2024-12-20",1702.96,3.287],["2024-12-23",1700.45,3.561],["2024-12-24",1705.4,3.543],["2024-12-26",1692.34,3.918],["2024-12-27",1658.07,5.836],["2024-12-30",1634.21,7.361],["2024-12-31",1645.54,7.009],["2025-01-02",1673.82,6.275],["2025-01-03",1683.12,5.055],["2025-01-06",1658.75,6.174],["2025-01-07",1656.08,7.244],["2025-01-08",1663.68,6.11],["2025-01-09",1663.51,5.592],["2025-01-10",1666.51,5.357],["2025-01-13",1678.57,5.186],["2025-01-14",1677.69,5.907],["2025-01-15",1644.25,6.621],["2025-01-16",1654.42,6.685],["2025-01-17",1686.59,5.816],["2025-01-20",1666.37,5.726],["2025-01-21",1664.4,6.112],["2025-01-22",1668.07,6.032],["2025-01-23",1657.54,5.866],["2025-01-24",1675.02,5.98],["2025-01-27",1695.99,4.646],["2025-01-28",1699.06,3.729],["2025-01-29",1698.36,3.821],["2025-01-30",1704.96,3.59],["2025-01-31",1697.96,3.57],["2025-02-03",1681.25,4.519],["2025-02-04",1687.52,4.349],["2025-02-05",1695.49,3.711],["2025-02-06",1688.77,4.092],["2025-02-07",1690.67,3.984],["2025-02-10",1691.16,3.985],["2025-02-11",1700.59,3.928],["2025-02-12",1677.11,4.755],["2025-02-13",1699.53,4.462],["2025-02-14",1696.95,3.647],["2025-02-17",1723.96,3.355],["2025-02-18",1729.77,2.207],["2025-02-19",1750.28,2.26],["2025-02-20",1766.82,0.446],["2025-02-21",1748.64,1.163],["2025-02-24",1757.26,1.276],["2025-02-25",1767.75,0.84],["2025-02-26",1768.28,0.674],["2025-02-27",1775.08,1.004],["2025-02-28",1764.42,1.266],["2025-03-03",1772.85,0.823],["2025-03-04",1758.7,1.819],["2025-03-05",1750.31,1.683],["2025-03-06",1765.59,1.628],["2025-03-07",1740.58,2.23],["2025-03-10",1736.05,2.484],["2025-03-11",1725.21,3.178],["2025-03-12",1725.79,3.124],["2025-03-13",1748.05,3.012],["2025-03-14",1729.26,2.866],["2025-03-17",1728.94,2.884],["2025-03-18",1730.61,3.333],["2025-03-19",1788.85,2.61],["2025-03-20",1813.08,0.424],["2025-03-21",1858.04,0.505],["2025-03-24",1861.26,0.821],["2025-03-25",1860.84,0.216],["2025-03-26",1879.23,0.378],["2025-03-27",1880.25,0.305],["2025-03-28",1872.87,0.955],["2025-03-31",1879.98,0.948],["2025-04-01",1891.31,1.268],["2025-04-02",1881.57,1.507],["2025-04-03",1833.51,4.048],["2025-04-04",1860.51,4.641],["2025-04-07",1869.03,3.803],["2025-04-08",1874.92,1.954],["2025-04-09",1954.07,1.959],["2025-04-10",1961.8,0.154],["2025-04-11",1982.57,0.434],["2025-04-14",1978.82,0.806],["2025-04-15",1973.11,0.628],["2025-04-16",2012.27,0.507],["2025-04-17",2023.75,1.152],["2025-04-21",2011.17,1.814],["2025-04-22",2048.64,1.669],["2025-04-23",2250.44,1.238],["2025-04-24",2258.15,0.569],["2025-04-25",2281.67,0.674],["2025-04-28",2308.23,0.517],["2025-04-29",2247.93,2.612],["2025-04-30",2265.53,2.814],["2025-05-01",2267.01,2.288],["2025-05-02",2283.3,1.674],["2025-05-05",2270.66,2.174],["2025-05-06",2291.53,1.555],["2025-05-07",2267.8,2.292],["2025-05-08",2286.88,1.991],["2025-05-09",2290.65,1.012],["2025-05-12",2271.26,1.602],["2025-05-13",2283.25,1.472],["2025-05-14",2276.82,1.361],["2025-05-15",2487.86,1.3],["2025-05-16",2512.76,0.196],["2025-05-19",2515.49,1.531],["2025-05-20",2497.76,2.576],["2025-05-21",2483.12,2.495],["2025-05-22",2528.29,2.574],["2025-05-23",2561.0,0],["2025-05-26",2574.29,0.156],["2025-05-27",2568.06,0.404],["2025-05-28",2546.4,1.627],["2025-05-29",2544.28,1.784],["2025-05-30",2544.08,1.7],["2025-06-02",2559.76,1.553],["2025-06-03",2541.89,1.56],["2025-06-04",2528.82,2.066],["2025-06-05",2548.26,2.047],["2025-06-06",2580.59,1.549],["2025-06-09",2580.34,0.397],["2025-06-10",2552.42,1.735],["2025-06-11",2596.08,1.359],["2025-06-12",2614.28,0.155],["2025-06-13",2617.54,0.537],["2025-06-16",2616.54,0.477],["2025-06-17",2632.16,0.401],["2025-06-18",2629.88,0.971],["2025-06-19",2649.09,0.18],["2025-06-20",2642.11,0.546],["2025-06-23",2635.21,0.703],["2025-06-24",2634.82,1.452],["2025-06-25",2626.74,1.299],["2025-06-26",2696.26,1.451],["2025-06-27",2684.99,0.572],["2025-06-30",2717.23,0.354],["2025-07-01",2761.12,0.204],["2025-07-02",2775.28,0.29],["2025-07-03",2697.3,3.166],["2025-07-04",2720.51,2.984],["2025-07-07",2751.87,3.029],["2025-07-08",2769.9,1.284],["2025-07-09",2740.0,1.558],["2025-07-10",2749.65,1.559],["2025-07-11",2743.1,1.463],["2025-07-14",2749.51,1.643],["2025-07-15",2767.12,1.116],["2025-07-16",2775.31,0.548],["2025-07-17",2751.26,1.235],["2025-07-18",2722.47,2.705],["2025-07-21",2726.8,2.393],["2025-07-22",2740.63,2.186],["2025-07-23",2740.64,1.814],["2025-07-24",2724.03,2.132],["2025-07-25",2734.56,2.031],["2025-07-28",2721.11,2.4],["2025-07-29",2724.35,2.35],["2025-07-30",2720.12,2.272],["2025-07-31",2676.92,4.077],["2025-08-01",2684.49,3.968],["2025-08-04",2692.29,4.063],["2025-08-05",2680.27,3.819],["2025-08-06",2661.18,4.39],["2025-08-07",2633.06,5.47],["2025-08-08",2596.14,6.726],["2025-08-11",2618.38,6.619],["2025-08-12",2662.31,6.071],["2025-08-13",2681.3,4.994],["2025-08-14",2693.5,3.279],["2025-08-15",2655.69,4.692],["2025-08-18",2670.28,4.802],["2025-08-19",2643.23,5.035],["2025-08-20",2642.74,5.16],["2025-08-21",2648.11,5.165],["2025-08-22",2665.93,4.945],["2025-08-25",2643.65,5.235],["2025-08-26",2657.68,5.063],["2025-08-27",2667.51,4.408],["2025-08-28",2689.07,4.13],["2025-08-29",2678.63,4.456],["2025-09-01",2681.17,3.764],["2025-09-02",2707.33,3.585],["2025-09-03",2695.59,3.993],["2025-09-04",2681.74,3.651],["2025-09-05",2716.47,3.787],["2025-09-08",2725.99,2.386],["2025-09-09",2730.83,2.492],["2025-09-10",2770.77,2.031],["2025-09-11",2813.3,0.524],["2025-09-12",2848.06,0.123],["2025-09-15",2864.39,0.275],["2025-09-16",2874.41,0.089],["2025-09-17",2861.97,0.494],["2025-09-18",2896.23,0.563],["2025-09-19",2902.75,0.597],["2025-09-22",2910.0,0.247],["2025-09-23",2906.79,0.175],["2025-09-24",2907.12,1.232],["2025-09-25",2880.82,1.448],["2025-09-26",2903.1,1.311],["2025-09-29",2943.55,0],["2025-09-30",2925.55,1.019],["2025-10-01",2907.97,1.461],["2025-10-02",2903.49,1.361],["2025-10-03",2911.81,1.558],["2025-10-06",2961.72,0.942],["2025-10-07",2939.18,1.114],["2025-10-08",2954.99,0.643],["2025-10-09",2931.78,1.028],["2025-10-10",2952.77,1.109],["2025-10-13",2978.45,0.302],["2025-10-14",2997.51,0.282],["2025-10-15",3039.73,0.366],["2025-10-16",3059.36,0.434],["2025-10-17",3053.36,0.229],["2025-10-20",3099.76,0.118],["2025-10-21",3091.56,1.571],["2025-10-22",3135.1,0.964],["2025-10-23",3120.05,0.512],["2025-10-24",3126.93,0.829],["2025-10-27",3134.96,0.472],["2025-10-28",3149.62,1.012],["2025-10-29",3177.52,0.581],["2025-10-30",3186.77,0.472],["2025-10-31",3196.16,0.58],["2025-11-03",3200.55,1.487],["2025-11-04",3219.16,0.633],["2025-11-05",3204.0,1.376],["2025-11-06",3212.7,0.762],["2025-11-07",3239.74,0.399],["2025-11-10",3291.93,0.179],["2025-11-11",3301.7,0.999],["2025-11-12",3355.64,0.213],["2025-11-13",3331.13,1.114],["2025-11-14",3305.12,1.623],["2025-11-17",3305.52,1.682],["2025-11-18",3324.47,1.468],["2025-11-19",3315.43,1.405],["2025-11-20",3326.94,1.197],["2025-11-21",3346.33,0.854],["2025-11-24",3348.94,1.384],["2025-11-25",3376.55,0.287],["2025-11-26",3335.95,1.486],["2025-11-27",3336.43,1.586],["2025-11-28",3338.13,1.525],["2025-12-01",3328.06,1.915],["2025-12-02",3321.57,2.195],["2025-12-03",3333.02,1.792],["2025-12-04",3366.39,1.7],["2025-12-05",3356.22,0.887],["2025-12-08",3361.06,0.946],["2025-12-09",3336.46,1.571],["2025-12-10",3349.06,1.645],["2025-12-11",3388.98,1.158],["2025-12-12",3415.2,0.097],["2025-12-15",3442.62,0.134],["2025-12-16",3411.74,1.173],["2025-12-17",3443.41,1.094],["2025-12-18",3495.04,0.233],["2025-12-19",3478.95,0.475],["2025-12-22",3522.29,0.308],["2025-12-23",3488.41,1.074],["2025-12-24",3529.11,0.498],["2025-12-26",3539.69,0.613],["2025-12-29",3549.19,0.271],["2025-12-30",3584.27,0.831],["2025-12-31",3617.06,0.037],["2026-01-02",3614.99,0.181],["2026-01-05",3601.25,1.079],["2026-01-06",3623.95,0.994],["2026-01-07",3656.77,0.206],["2026-01-08",3654.98,0.526],["2026-01-09",3670.41,0.188],["2026-01-12",3664.82,0.258],["2026-01-13",3713.02,0.226],["2026-01-14",3705.2,0.345],["2026-01-15",3651.04,1.801],["2026-01-16",3624.78,2.508],["2026-01-19",3632.05,2.4],["2026-01-20",3625.08,2.815],["2026-01-21",3730.9,2.661],["2026-01-22",3705.76,1.542],["2026-01-23",3698.2,1.302],["2026-01-26",3704.86,1.157],["2026-01-27",3763.49,0.952],["2026-01-28",3764.49,0],["2026-01-29",4169.15,0],["2026-01-30",4258.4,0],["2026-02-02",4279.32,0.117],["2026-02-03",4297.33,0],["2026-02-04",4512.28,0.708],["2026-02-05",4550.6,0.565],["2026-02-06",4582.85,0.554],["2026-02-09",4630.83,0.25],["2026-02-10",4580.04,1.223],["2026-02-11",4559.58,1.588],["2026-02-12",4538.1,2.533],["2026-02-13",4564.87,1.474],["2026-02-16",4517.8,2.49],["2026-02-17",4645.05,4.039],["2026-02-18",4714.97,0.042],["2026-02-19",4717.45,0.152],["2026-02-20",4738.02,0.26],["2026-02-23",4753.11,0.049],["2026-02-24",4813.4,0.066],["2026-02-25",4791.45,0.539],["2026-02-26",4801.49,0.7],["2026-02-27",4847.25,0.372],["2026-03-02",4890.84,0],["2026-03-03",4890.68,0.065],["2026-03-04",4854.34,1.032],["2026-03-05",4857.14,1.751],["2026-03-06",4841.22,1.075],["2026-03-09",4829.26,1.524],["2026-03-10",4833.94,1.502],["2026-03-11",4834.44,1.214],["2026-03-12",4769.9,2.533],["2026-03-13",4776.48,2.825],["2026-03-16",4796.58,2.531],["2026-03-17",4783.06,2.593],["2026-03-18",4947.83,2.202],["2026-03-19",5056.5,0],["2026-03-20",5064.36,0.447],["2026-03-23",5045.0,3.443],["2026-03-24",5119.76,2.561],["2026-03-25",5156.12,1.306],["2026-03-26",5166.12,1.593],["2026-03-27",5167.98,1.098],["2026-03-30",5263.34,1.06],["2026-03-31",5341.7,0.167],["2026-04-01",5369.36,0.037],["2026-04-02",5323.74,1.55],["2026-04-06",5343.7,0.643],["2026-04-07",5341.7,0.682],["2026-04-08",5273.36,1.879],["2026-04-09",5272.72,2.17],["2026-04-10",5293.48,1.928],["2026-04-13",5244.94,2.408],["2026-04-14",5271.39,2.334],["2026-04-15",5341.63,1.953],["2026-04-16",5218.88,3.309],["2026-04-17",5205.08,3.565],["2026-04-20",5121.54,5.113],["2026-04-21",5108.14,5.398],["2026-04-22",5112.42,5.466],["2026-04-23",5125.13,5.92],["2026-04-24",5069.62,6.074],["2026-04-27",5102.24,6.262],["2026-04-28",5370.5,1.365],["2026-04-29",5453.36,0.887],["2026-04-30",5433.94,1.698],["2026-05-01",5431.94,1.276],["2026-05-04",5489.6,1.258],["2026-05-05",5404.76,2.951],["2026-05-06",5393.36,2.827],["2026-05-07",5506.16,1.923],["2026-05-08",5328.4,3.281],["2026-05-11",5287.2,4.047],["2026-05-12",5221.36,5.437],["2026-05-13",5259.42,5.26],["2026-05-14",5219.82,5.252],["2026-05-15",5174.82,6.069],["2026-05-18",5091.92,7.574],["2026-05-19",5123.94,7.586],["2026-05-20",5123.6,7.337],["2026-05-21",5097.34,7.505],["2026-05-22",5136.78,7.457],["2026-05-25",5114.1,7.171],["2026-05-26",5052.53,8.289],["2026-05-27",5021.0,8.89],["2026-05-28",5009.35,9.072],["2026-05-29",5016.55,9.109],["2026-06-01",5018.32,8.948],["2026-06-02",5071.82,8.638],["2026-06-03",5064.57,8.07],["2026-06-04",5066.91,8.061],["2026-06-05",5000.3,9.291],["2026-06-08",5041.82,9.273],["2026-06-09",5083.52,8.664],["2026-06-10",5074.02,7.898],["2026-06-11",5110.12,7.889],["2026-06-12",5112.12,7.225],["2026-06-15",5074.37,7.91],["2026-06-16",5052.53,8.289],["2026-06-17",4995.47,9.455],["2026-06-18",5106.42,9.288],["2026-06-19",5042.78,8.475],["2026-06-22",5059.26,8.456],["2026-06-23",4998.97,9.261],["2026-06-24",5007.36,9.297],["2026-06-25",5061.92,9.021],["2026-06-26",5027.7,8.739],["2026-06-29",5053.1,8.776],["2026-06-30",5025.47,8.78],["2026-07-01",5090.83,9.369],["2026-07-02",5237.17,8.419],["2026-07-03",5234.49,5.156],["2026-07-06",5274.89,5.022],["2026-07-07",5296.26,5.69],["2026-07-08",5315.4,3.937],["2026-07-09",5318.4,3.463],["2026-07-10",5295.98,4.514],["2026-07-13",5321.16,3.942],["2026-07-14",5405.24,2.086],["2026-07-15",5425.16,1.793],["2026-07-16",5388.58,2.189],["2026-07-17",5388.9,2.183],["2026-07-20",5338.3,3.101],["2026-07-21",5422.38,3.058],["2026-07-22",5437.4,1.521],["2026-07-23",5421.3,2.065],["2026-07-24",5421.26,1.596],["2026-07-27",5497.18,1.508],["2026-07-28",5679.12,0.589],["2026-07-29",5799.7,0.208],["2026-07-30",5823.9,0],["2026-07-31",5817.32,0.182],["2026-08-03",5807.16,0.689],["2026-08-04",5878.7,0.373],["2026-08-05",6083.36,0],["2026-08-06",6046.96,0.598],["2026-08-07",6149.12,0.549],["2026-08-10",6337.28,0.57],["2026-08-11",6377.94,0.943],["2026-08-12",6526.34,0.645],["2026-08-13",6509.94,1.437],["2026-08-14",6521.78,0.819],["2026-08-17",6562.42,0.512],["2026-08-18",6570.22,0],["2026-08-19",6419.8,2.746],["2026-08-20",6465.18,2.599],["2026-08-21",6492.68,1.678],["2026-08-24",6451.8,1.802],["2026-08-25",6485.98,1.985],["2026-08-26",6456.94,2.223],["2026-08-27",6460.94,1.783],["2026-08-28",6394.75,2.809],["2026-08-31",6428.79,2.701],["2026-09-01",6500.93,2.315],["2026-09-02",6504.73,1.085],["2026-09-03",6557.95,1.166],["2026-09-04",6700.93,1.326],["2026-09-07",6704.73,0.03],["2026-09-08",6743.18,0.089],["2026-09-09",6668.3,1.388],["2026-09-10",6783.52,1.611],["2026-09-11",6771.81,0.791],["2026-09-14",6836.25,0.733],["2026-09-15",6867.23,0.175],["2026-09-16",6767.09,1.458],["2026-09-17",6804.43,1.415],["2026-09-18",6800.33,1.445],["2026-09-21",6746.63,1.772],["2026-09-22",6759.13,2.292],["2026-09-23",6655.67,3.41],["2026-09-24",6698.17,2.725],["2026-09-25",6657.81,3.05],["2026-09-28",6531.05,4.91],["2026-09-29",6367.93,7.472],["2026-09-30",6382.85,7.358],["2026-10-01",6389.69,7.112],["2026-10-02",6460.29,6.91],["2026-10-05",6430.23,6.378],["2026-10-06",6320.19,7.966],["2026-10-07",6251.77,8.962],["2026-10-08",6272.31,9.585],["2026-10-09",6300.25,8.692],["2026-10-12",6313.59,8.315]],"m":[["2023.03",-4.47],["2023.04",2.56],["2023.05",0.43],["2023.06",-5.35],["2023.07",0.01],["2023.08",-1.61],["2023.09",-0.46],["2023.10",-2.2],["2023.11",6.12],["2023.12",10.13],["2024.01",2.01],["2024.02",17.6],["2024.03",9.97],["2024.04",2.78],["2024.05",10.49],["2024.06",-2.19],["2024.07",0.63],["2024.08",1.48],["2024.09",-1.34],["2024.10",3.82],["2024.11",8.84],["2024.12",-5.42],["2025.01",3.19],["2025.02",3.91],["2025.03",6.55],["2025.04",20.51],["2025.05",12.3],["2025.06",6.81],["2025.07",-1.48],["2025.08",0.06],["2025.09",9.22],["2025.10",9.25],["2025.11",4.44],["2025.12",8.36],["2026.01",17.73],["2026.02",13.83],["2026.03",10.2],["2026.04",1.73],["2026.05",-7.68],["2026.06",0.18],["2026.07",15.76],["2026.08",10.51],["2026.09",-0.71],["2026.10",-1.09]]};
+</script>
+<script>
+(() => {
+
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const $ = s => document.querySelector(s);
+  const easeOutExpo = t => t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+  const easeInOut = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  const fmt = n => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  const tween = (ms, ease, fn, done) => {
+    if (reduce) { fn(1); done && done(); return }
+    const t0 = performance.now();
+    const step = now => { const t = Math.min(1, (now - t0) / ms); fn(ease(t)); t < 1 ? requestAnimationFrame(step) : done && done() };
+    requestAnimationFrame(step);
+  };
+
+  // Ogni sezione riceve .in la prima volta che entra nello schermo
+  const hooks = new Map();
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add("in"); io.unobserve(e.target);
+    const h = hooks.get(e.target); h && h();
+  }), { threshold: .22 });
+  const on = (sel, fn) => { const el = $(sel); if (fn) hooks.set(el, fn); io.observe(el) };
+
+  /* Ogni sezione nuova riceve .in quando entra nello schermo: le parti [data-r] compaiono in dissolvenza */
+  const io2 = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io2.unobserve(e.target) } }), { threshold: .15 });
+  document.querySelectorAll(".sec").forEach(s => io2.observe(s));
+  // in fondo alla pagina una sezione bassa potrebbe non raggiungere la soglia: la si accende comunque
+  addEventListener("scroll", () => { if (innerHeight + scrollY >= document.documentElement.scrollHeight - 4) document.querySelectorAll(".sec").forEach(s => s.classList.add("in")) }, { passive: true });
+
+  /* 02 · La parola che cambia sale dal basso */
+  const rw = [...$("#rw").children]; let ri = 0, rt = null;
+  const nextWord = () => { const a = rw[ri]; ri = (ri + 1) % rw.length; const b = rw[ri];
+    a.classList.remove("on"); a.classList.add("out"); b.classList.remove("out"); b.classList.add("on");
+    setTimeout(() => a.classList.remove("out"), 650) };
+  if (!reduce) new IntersectionObserver(es => { if (es[0].isIntersecting) { if (!rt) rt = setInterval(nextWord, 1100) } else { clearInterval(rt); rt = null } }).observe($("#rotator"));
+
+  /* 05 · I tre passi si accendono uno alla volta mentre il blocco è visibile */
+  const st = [...$("#steps2").children]; let si = 0, stt = null;
+  const lightStep = i => st.forEach((li, j) => li.classList.toggle("on", reduce ? true : j === i));
+  if (reduce) lightStep(0);
+  else new IntersectionObserver(es => { if (es[0].isIntersecting) { if (!stt) stt = setInterval(() => lightStep(si = (si + 1) % st.length), 2600) } else { clearInterval(stt); stt = null } }, { threshold: .4 }).observe($("#steps2"));
+  st.forEach((li, j) => li.addEventListener("mouseenter", () => { clearInterval(stt); stt = null; si = j; lightStep(j) }));
+
+
+
+  /* 07 · Numeri dei costi */
+  on("#costi", () => {
+    document.querySelectorAll("#costi [data-count]").forEach((el, i) => {
+      const to = +el.dataset.count, from = +(el.dataset.from || 0);
+      setTimeout(() => tween(1800, easeOutExpo, k => el.textContent = Math.round(from + (to - from) * k)), reduce ? 0 : 120 * i);
+    });
+  });
+
+  /* Barra fissa: visibile dopo l'hero, nascosta sulla chiusura */
+  const dock = $("#dock"); let pastHero = false, atEnd = false;
+  const upd = () => { const v = pastHero && !atEnd; dock.classList.toggle("show", v); dock.setAttribute("aria-hidden", v ? "false" : "true"); dock.querySelector("a").tabIndex = v ? 0 : -1 };
+  new IntersectionObserver(es => { pastHero = !es[0].isIntersecting && es[0].boundingClientRect.top < 0; upd() }).observe($("#hero"));
+  // nascosta anche quando è già visibile un altro bottone per Telegram (risultato della prova, chiusura)
+  const seen = new Set();
+  const ioEnd = new IntersectionObserver(es => { es.forEach(e => e.isIntersecting ? seen.add(e.target) : seen.delete(e.target)); atEnd = seen.size > 0; upd() }, { threshold: .2 });
+  ioEnd.observe($("#entra")); ioEnd.observe($(".r-cta"));
+  /* La prova come quiz: la risposta sblocca numeri e curva (curiosità, poi piccolo impegno, poi ricompensa) */
+  const quiz = $("#quiz"), qRes = $("#qRes");
+  $("#capPresets").addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return;
+    $("#rCap").textContent = fmt(+b.dataset.v) + " €";
+    const first = !quiz.classList.contains("answered");
+    quiz.classList.add("answered");
+    if (first) { qRes.hidden = false; qRes.classList.add("show"); setTimeout(() => window.__proofReveal && window.__proofReveal(), 0) }
+  });
+  $("#rChange").addEventListener("click", () => $("#capPresets").scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" }));
+
+  /* Anno per anno: rendimenti composti dai mesi di PROOF.m */
+  const MES = ["gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ott", "nov", "dic"];
+  const yrs = {}; PROOF.m.forEach(([ym, r]) => { const [y, m] = ym.split("."); (yrs[y] = yrs[y] || { f: 1, a: +m, b: +m }).f *= 1 + r / 100; yrs[y].b = +m });
+  const ys = Object.entries(yrs), maxY = Math.max(...ys.map(([, o]) => o.f - 1));
+  io2.observe($("#anni"));
+
+  /* Mese per mese: barre in su (lime) e in giù (grigie) dalla stessa linea, valore solo al passaggio */
+  (() => {
+    const M = PROOF.m.filter(([ym]) => ym >= "2024"), pos = M.filter(([, r]) => r > 0).length;
+    $("#mPos").textContent = pos; $("#mTot").textContent = M.length;
+    const hi = Math.max(...M.map(([, r]) => r)), lo = Math.min(...M.map(([, r]) => r)), R = hi - lo;
+    const bars = $("#mBars"); bars.style.setProperty("--base", (hi / R * 100).toFixed(2) + "%");
+    bars.innerHTML = M.map(([, r], i) => `<div class="mb ${r >= 0 ? "pos" : "neg"}" style="--h:${(Math.abs(r) / R * 100).toFixed(2)}%;--d:${(.3 + i * .018).toFixed(3)}s"><i></i></div>`).join("");
+    const span = {}; M.forEach(([ym]) => { const y = ym.slice(0, 4); span[y] = (span[y] || 0) + 1 });
+    /* sotto le barre: l'anno e il suo rendimento totale, composto dai mesi */
+    $("#mYears").innerHTML = Object.entries(span).map(([y, n]) => { const o = yrs[y], p = (o.f - 1) * 100, part = o.a > 1 || o.b < 12 ? ` <small>${MES[o.a - 1]}–${MES[o.b - 1]}</small>` : "";
+      return `<span style="grid-column:span ${n}"><em>${y}${part}</em><b class="num ${p < 0 ? "n" : ""}">${p >= 0 ? "+" : "−"}${Math.abs(p).toLocaleString("it-IT", { maximumFractionDigits: 1, minimumFractionDigits: 1 })}%</b></span>` }).join("");
+    const tip = $("#mTip"), cols = [...bars.children];
+    const show = x => {
+      const r = bars.getBoundingClientRect(), i = Math.max(0, Math.min(M.length - 1, Math.floor((x - r.left) / r.width * M.length)));
+      const [ym, v] = M[i], [y, m] = ym.split("."), c = cols[i].getBoundingClientRect();
+      cols.forEach((el, j) => el.classList.toggle("on", j === i)); bars.classList.add("hovering");
+      tip.innerHTML = `${MES[m - 1]} ${y} · <em class="${v < 0 ? "n" : ""}">${v >= 0 ? "+" : "−"}${Math.abs(v).toFixed(1).replace(".", ",")}%</em>`;
+      const half = tip.offsetWidth / 2, cx = c.left + c.width / 2 - r.left;
+      tip.style.left = Math.max(half, Math.min(r.width - half, cx)) + "px"; tip.classList.add("show");
+    };
+    const hide = () => { bars.classList.remove("hovering"); cols.forEach(el => el.classList.remove("on")); tip.classList.remove("show") };
+    bars.addEventListener("pointermove", e => show(e.clientX));
+    bars.addEventListener("pointerdown", e => show(e.clientX));
+    bars.addEventListener("pointerleave", hide);
+    $("#mChart").setAttribute("aria-label", `Rendimento lordo mese per mese: ${pos} mesi positivi su ${M.length}, il migliore +${hi.toFixed(1).replace(".", ",")}%, il peggiore −${Math.abs(lo).toFixed(1).replace(".", ",")}%.`);
+  })();
+
+  /* Card del prezzo in 3D: da lontano segue appena il mouse; con il cursore sopra si raddrizza, si solleva e si inclina verso di lui,
+     il riflesso si attenua: niente luce sotto il cursore */
+  (() => {
+    const card = document.getElementById("tkCard"), box = card && card.parentElement; if (!card) return;
+    const still = matchMedia("(prefers-reduced-motion: reduce)").matches, touch = matchMedia("(hover: none)").matches;
+    if (still) return;
+    let tx = 7, ty = -12, rx = 7, ry = -12, tgx = 28, tgy = 0, gx = 28, gy = 0, tl = 0, l = 0, mouse = false, over = false, t0 = performance.now();
+    addEventListener("pointermove", e => {
+      if (e.pointerType !== "mouse") return; mouse = true;
+      const r = card.getBoundingClientRect();
+      over = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+      if (over) {
+        const px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+        ty = (px - .5) * 10; tx = -(py - .5) * 7; tgx = 30 + px * 20; tgy = 4 + py * 10; tl = 1;
+      } else {
+        const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+        const dx = Math.max(-1, Math.min(1, (e.clientX - cx) / (innerWidth * .45))), dy = Math.max(-1, Math.min(1, (e.clientY - cy) / (innerHeight * .45)));
+        ty = -9 + dx * 6; tx = 6 - dy * 4; tgx = 40 + dx * 25; tgy = 12 + dy * 25; tl = 0;
+      }
+    }, { passive: true });
+    let seen = true;
+    new IntersectionObserver(([e]) => { const was = seen; seen = e.isIntersecting; if (seen && !was) requestAnimationFrame(tick) }).observe(box);
+    const tick = now => {
+      if (!seen) return;
+      if (!mouse || touch) { const k = (now - t0) / 1000; ty = -10 + Math.sin(k * .5) * 4; tx = 6 + Math.cos(k * .4) * 2.5; tgx = 40 + Math.sin(k * .5) * 18; tgy = 10 }
+      const k = over ? .09 : .045;
+      rx += (tx - rx) * k; ry += (ty - ry) * k; gx += (tgx - gx) * .12; gy += (tgy - gy) * .12; l += (tl - l) * .08;
+      card.style.setProperty("--rx", rx.toFixed(2) + "deg"); card.style.setProperty("--ry", ry.toFixed(2) + "deg"); card.style.setProperty("--lift", l.toFixed(3));
+      card.style.setProperty("--gx", gx.toFixed(1) + "%"); card.style.setProperty("--gy", gy.toFixed(1) + "%");
+      card.style.setProperty("--sx", (-ry * 1.6).toFixed(1) + "px"); card.style.setProperty("--sy", (34 + rx * 1.8 + l * 14).toFixed(1) + "px");
+      box.style.setProperty("--fx", (-ry * .9).toFixed(1) + "px");
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  })();
+
+  /* Card in rilievo: al passaggio del cursore si solleva, si inclina verso il mouse e una luce soffusa esce da sotto e la segue */
+  if (matchMedia("(hover: hover)").matches) {
+    const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    document.querySelectorAll(".vsbox, .ft, .stage, .proof .lab-box, .example, .quiz, .heatbox, .gvs, .goldtile, .risk").forEach(c => {
+      c.classList.add("has-glare");
+      /* la luce sta in un elemento fratello dietro la card, più grande della card, così esce dai bordi */
+      const u = document.createElement("span"), PAD = 170; u.className = c.classList.contains("stage") ? "under soft" : "under"; u.setAttribute("aria-hidden", "true"); c.before(u);
+      const par = c.parentElement; if (getComputedStyle(par).position === "static") par.style.position = "relative";
+      const place = () => { const w = c.offsetWidth + PAD * 2, h = c.offsetHeight + PAD * 2; Object.assign(u.style, { left: c.offsetLeft - PAD + "px", top: c.offsetTop - PAD + "px", width: w + "px", height: h + "px" }) };
+      let ux = 0, uy = 0, tux = 0, tuy = 0, uRun = false;
+      const uTick = () => {
+        ux += (tux - ux) * .05; uy += (tuy - uy) * .05;
+        u.style.setProperty("--ux", ux.toFixed(1) + "px"); u.style.setProperty("--uy", uy.toFixed(1) + "px");
+        if (Math.abs(tux - ux) + Math.abs(tuy - uy) > .5) requestAnimationFrame(uTick); else uRun = false;
+      };
+      c.addEventListener("pointerenter", e => { if (e.pointerType !== "mouse") return; place(); const r = c.getBoundingClientRect(); ux = tux = e.clientX - r.left + PAD; uy = tuy = e.clientY - r.top + PAD; u.classList.add("on") });
+      c.addEventListener("pointerleave", () => u.classList.remove("on"));
+      let rx = 0, ry = 0, l = 0, trx = 0, try_ = 0, tl = 0, run = false, max = 4;
+      const ready = () => !c.hasAttribute("data-r") || getComputedStyle(c).opacity === "1";
+      const tick = () => {
+        rx += (trx - rx) * .07; ry += (try_ - ry) * .07; l += (tl - l) * .08;
+        c.style.setProperty("--rx", rx.toFixed(2) + "deg"); c.style.setProperty("--ry", ry.toFixed(2) + "deg");
+        c.style.setProperty("--lift", l.toFixed(3)); c.style.setProperty("--sx", (-ry * 4).toFixed(1) + "px");
+        if (tl === 0 && l < .004 && Math.abs(rx) + Math.abs(ry) < .02) { run = false; c.classList.remove("tilt"); ["--rx", "--ry", "--lift", "--sx"].forEach(k => c.style.removeProperty(k)); return }
+        requestAnimationFrame(tick);
+      };
+      c.addEventListener("pointermove", e => {
+        const r = c.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+        if (e.pointerType !== "mouse") return;
+        tux = x + PAD; tuy = y + PAD; if (!uRun) { uRun = true; requestAnimationFrame(uTick) }
+        if (still) return;
+        if (tl === 0) {
+          if (!ready()) return;
+          max = Math.max(1, Math.min(3.2, 1300 / c.offsetWidth)); tl = 1; c.classList.add("tilt");
+          if (!run) { run = true; requestAnimationFrame(tick) }
+        }
+        try_ = (x / r.width - .5) * 2 * max; trx = -(y / r.height - .5) * 2 * max * Math.min(1, r.width / r.height * .6);
+      }, { passive: true });
+      c.addEventListener("pointerleave", () => { trx = try_ = 0; tl = 0 });
+    });
+  }
+
+  /* Barra di avanzamento della lettura */
+  const prog = document.createElement("div"); prog.className = "progress"; prog.setAttribute("aria-hidden", "true"); document.body.appendChild(prog);
+  const setProg = () => { const h = document.documentElement.scrollHeight - innerHeight; prog.style.transform = `scaleX(${h > 0 ? Math.min(1, scrollY / h) : 0})` };
+  addEventListener("scroll", setProg, { passive: true }); setProg();
+
+  /* Tessera oro: lo stesso metallo fuso dell'hero, vivo, preso dallo shader dell'hero senza toccarlo */
+  (() => {
+    const tile = $(".goldtile"), cv = document.createElement("canvas"); cv.setAttribute("aria-hidden", "true"); tile.prepend(cv);
+    const src = [...document.scripts].map(s => s.textContent).find(t => t.includes("const fs = `"));
+    const gl = cv.getContext("webgl", { antialias: false }); if (!src || !gl) return;
+    let fs = src.slice(src.indexOf("const fs = `") + 12); fs = fs.slice(0, fs.indexOf("`;"));
+    fs = fs.replace(/  col \*= mix\(vl, vp\*1\.05, port\);\n/, "").replace(/  col \*= smoothstep\(1\.25[^\n]*\n/, "");
+    const sh = (t, s) => { const o = gl.createShader(t); gl.shaderSource(o, s); gl.compileShader(o); return o };
+    const pr = gl.createProgram(); gl.attachShader(pr, sh(gl.VERTEX_SHADER, "attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}")); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, fs)); gl.linkProgram(pr);
+    if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) return; gl.useProgram(pr);
+    const b = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    const l = gl.getAttribLocation(pr, "p"); gl.enableVertexAttribArray(l); gl.vertexAttribPointer(l, 2, gl.FLOAT, false, 0, 0);
+    const U = n => gl.getUniformLocation(pr, n), uR = U("res"), uT = U("time"), uM = U("mouse");
+    gl.uniform4fv(U("rip[0]"), new Float32Array(24));
+    const size = () => { const s = Math.min(1, 900 / Math.max(cv.clientWidth, 1)) * Math.min(1.5, devicePixelRatio || 1) * .8; cv.width = Math.round(cv.clientWidth * s); cv.height = Math.round(cv.clientHeight * s); gl.viewport(0, 0, cv.width, cv.height) };
+    const m = { x: .7, y: .5, tx: .7, ty: .5, on: 0, ton: 0 }; let vis = false, raf = 0; const t0 = performance.now();
+    tile.addEventListener("pointermove", e => { const r = cv.getBoundingClientRect(); m.tx = (e.clientX - r.left) / r.width; m.ty = 1 - (e.clientY - r.top) / r.height; m.ton = 1 });
+    tile.addEventListener("pointerleave", () => m.ton = 0);
+    const draw = now => { raf = 0; if (!vis) return;
+      m.x += (m.tx - m.x) * .06; m.y += (m.ty - m.y) * .06; m.on += (m.ton - m.on) * .05;
+      gl.uniform2f(uR, cv.width, cv.height); gl.uniform1f(uT, reduce ? 60 : (now - t0) / 1000 + 60); gl.uniform3f(uM, m.x, m.y, m.on);
+      gl.drawArrays(gl.TRIANGLES, 0, 3); if (!reduce) raf = requestAnimationFrame(draw) };
+    size(); addEventListener("resize", size);
+    new IntersectionObserver(es => { vis = es[0].isIntersecting; if (vis && !raf) raf = requestAnimationFrame(draw) }).observe(tile);
+  })();
+  /* LA PROVA · simulazione storica interattiva
+     PROOF.d = [data, saldo di chiusura, drawdown % massimo del giorno dal picco storico] giornaliero su 1.000 di deposito (somma delle due strategie), PROOF.m = [mese, rendimento %] */
+  (() => {
+    const D = PROOF.d.map(r => ({ t: Date.parse(r[0]), d: r[0], b: r[1], ddp: r[2] / 100 }));
+    const M = PROOF.m;
+    const MESI = ["gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ott", "nov", "dic"];
+    const euro = n => fmt(n) + " €";
+    const pct = n => (n >= 0 ? "+" : "−") + Math.abs(n).toLocaleString("it-IT", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + "%";
+    const dLabel = s => { const [y, m, g] = s.split("-"); return `${+g} ${MESI[m - 1]} ${y}` };
+    const state = { cap: 10000, period: "all", net: false };
+    const eqLine = $("#eqLine"), eqArea = $("#eqArea"), uwArea = $("#uwArea"), clip = $("#eqClipRect");
+    const chart = $("#chart"), svg = $("#eqSvg"), dot = $("#eqDot"), tipEl = $("#eqTip"), cross = $("#eqCross");
+    const W = 1000, H = 300;
+    let view = null, shown = false;
+
+    const cutoff = p => {
+      const end = new Date(D[D.length - 1].t);
+      if (p === "all") return -Infinity;
+      if (p === "ytd") return Date.UTC(end.getUTCFullYear(), 0, 1);
+      const c = new Date(end); c.setUTCMonth(c.getUTCMonth() - +p); return c.getTime();
+    };
+    function compute() {
+      const c = cutoff(state.period);
+      let s = D.findIndex(r => r.t >= c); s = Math.max(0, s - 1);
+      const pts = D.slice(s), base = pts[0].b;
+      let peak = -Infinity, mdd = 0;
+      const v = pts.map(r => {
+        const net = g => state.net && g > state.cap ? state.cap + (g - state.cap) * .7 : g;
+        const val = net(state.cap * r.b / base);
+        // il drawdown dal picco del periodo; per l'intero periodo usa quello calcolato operazione per operazione
+        let dd = (Math.max(peak, val) - val) / Math.max(peak, val);
+        if (state.period === "all" && !state.net) dd = Math.max(dd, r.ddp);
+        peak = Math.max(peak, val); mdd = Math.max(mdd, dd);
+        return { t: r.t, d: r.d, v: val, dd };
+      });
+      // mesi interi del periodo: per 12 e 24 mesi si parte dal mese dopo il taglio
+      const cd = new Date(c); if (state.period !== "ytd" && state.period !== "all") cd.setUTCMonth(cd.getUTCMonth() + 1);
+      const cm = state.period === "all" ? "" : cd.toISOString().slice(0, 7).replace("-", ".");
+      const months = M.filter(m => m[0] >= cm);
+      return { v, mdd, months, cm };
+    }
+    function scale(v) {
+      let lo = Math.min(...v.map(p => p.v)), hi = Math.max(...v.map(p => p.v));
+      const pad = (hi - lo) * .08; lo -= pad; hi += pad;
+      const t0 = v[0].t, t1 = v[v.length - 1].t;
+      return { x: t => (t - t0) / (t1 - t0) * W, y: val => H - (val - lo) / (hi - lo) * H, lo, hi, t0, t1 };
+    }
+    function paths(v, sc) {
+      let d = "";
+      v.forEach((p, i) => d += (i ? "L" : "M") + sc.x(p.t).toFixed(1) + " " + sc.y(p.v).toFixed(1));
+      const maxdd = Math.max(.0001, ...v.map(p => p.dd));
+      let u = `M0 0`;
+      v.forEach(p => u += `L${sc.x(p.t).toFixed(1)} ${(p.dd / Math.max(maxdd, .2) * 60).toFixed(1)}`);
+      u += `L${W} 0Z`;
+      return { line: d, area: d + `L${W} ${H}L0 ${H}Z`, uw: u };
+    }
+    function labels(sc) {
+      // asse Y: 4 valori arrotondati
+      const yl = $("#yLab"), grid = $("#eqGrid"); yl.innerHTML = ""; grid.innerHTML = "";
+      const step = niceStep((sc.hi - sc.lo) / 4);
+      for (let val = Math.ceil(sc.lo / step) * step; val <= sc.hi; val += step) {
+        const y = sc.y(val) / H * 100;
+        yl.insertAdjacentHTML("beforeend", `<span style="top:${y}%">${val >= 10000 ? fmt(val / 1000) + "k" : fmt(val)}</span>`);
+        grid.insertAdjacentHTML("beforeend", `<line class="grid" x1="0" x2="${W}" y1="${sc.y(val)}" y2="${sc.y(val)}"/>`);
+      }
+      const base = $("#eqBase"); base.setAttribute("y1", sc.y(state.cap)); base.setAttribute("y2", sc.y(state.cap));
+      // asse X: inizio di ogni anno (o trimestre se il periodo è breve)
+      const xl = $("#xLab"); xl.innerHTML = "";
+      const a = new Date(sc.t0), b = new Date(sc.t1), short = (sc.t1 - sc.t0) < 400 * 864e5;
+      for (let y = a.getUTCFullYear(); y <= b.getUTCFullYear(); y++) for (let m = 0; m < 12; m += short ? 3 : 12) {
+        const t = Date.UTC(y, m, 1); if (t < sc.t0 || t > sc.t1) continue;
+        const x = sc.x(t) / W * 100; if (x < 4 || x > 96) continue;
+        xl.insertAdjacentHTML("beforeend", `<span style="left:${x}%">${short ? MESI[m] + " " + String(y).slice(2) : y}</span>`);
+      }
+    }
+    function niceStep(raw) { const p = Math.pow(10, Math.floor(Math.log10(raw))), n = raw / p; return (n < 1.5 ? 1 : n < 3 ? 2 : n < 7 ? 5 : 10) * p }
+    function stats(c, animate) {
+      const last = c.v[c.v.length - 1].v, profit = last - state.cap;
+      const pos = c.months.filter(m => m[1] > 0).length, worst = c.months.reduce((a, m) => m[1] < a[1] ? m : a, ["", Infinity]);
+      const set = k => {
+        $("#sFinal").textContent = euro(state.cap + profit * k);
+        $("#sProfit").textContent = (profit >= 0 ? "+" : "−") + euro(Math.abs(profit * k));
+        $("#sPct").textContent = pct(profit / state.cap * 100 * k) + " sul capitale";
+        $("#sDD").textContent = "−" + (c.mdd * 100 * k).toLocaleString("it-IT", { maximumFractionDigits: 1, minimumFractionDigits: 1 }) + "%";
+        $("#sMonths").textContent = `${Math.round(pos * k)} su ${c.months.length}`;
+      };
+      animate ? tween(1500, easeOutExpo, set) : set(1);
+      const [wy, wm] = worst[0].split(".");
+      $("#sWorst").textContent = worst[0] ? `peggiore: ${MESI[wm - 1]} ${wy}, ${pct(worst[1])}` : "";
+      $("#chartSummary").textContent = `Con ${euro(state.cap)} il saldo simulato arriva a ${euro(last)}, con un drawdown massimo del ${(c.mdd * 100).toFixed(1)}%.`;
+    }
+    function heat(cm) {
+      const box = $("#heat"); if (!box) return; const by = {};
+      M.forEach(([ym, r]) => { const [y, m] = ym.split("."); (by[y] = by[y] || {})[+m] = r });
+      let h = `<span></span>` + MESI.map(m => `<span>${m}</span>`).join("") + `<span>anno</span>`, i = 0;
+      Object.keys(by).forEach(y => {
+        h += `<span>${y}</span>`; let yr = 1;
+        for (let m = 1; m <= 12; m++) {
+          const r = by[y][m], ym = `${y}.${String(m).padStart(2, "0")}`;
+          if (r === undefined) { h += `<div class="c empty" style="--d:${(i++ * .012).toFixed(3)}s"></div>`; continue }
+          yr *= 1 + r / 100;
+          const a = Math.min(1, .18 + Math.abs(r) / 14), out = cm && ym < cm;
+          h += `<div class="c ${r >= 0 ? "pos" : "neg"}${a < .5 ? " lo" : ""}" style="--a:${a.toFixed(2)};--d:${(i++ * .012).toFixed(3)}s${out ? ";filter:grayscale(1) brightness(.6)" : ""}" title="${MESI[m - 1]} ${y}: ${pct(r)}">${r >= 0 ? "+" : "−"}${Math.abs(r).toFixed(1).replace(".", ",")}</div>`;
+        }
+        const yp = (yr - 1) * 100;
+        h += `<div class="c yr${yp < 0 ? " neg" : ""}" style="--d:${(i++ * .012).toFixed(3)}s">${pct(yp)}</div>`;
+      });
+      box.innerHTML = h;
+    }
+    function render(mode) {
+      const c = compute(), sc = scale(c.v), p = paths(c.v, sc);
+      const prev = view; view = { c, sc };
+      labels(sc); stats(c, mode === "reveal");
+      if (mode === "morph" && prev && prev.c.v.length === c.v.length && !reduce) {
+        const a = paths(prev.c.v, sc);
+        // interpola i valori tra la curva lorda e quella netta
+        tween(600, easeInOut, k => {
+          const mix = c.v.map((q, i) => ({ ...q, v: prev.c.v[i].v + (q.v - prev.c.v[i].v) * k }));
+          const pk = paths(mix, sc); eqLine.setAttribute("d", pk.line); eqArea.setAttribute("d", pk.area); uwArea.setAttribute("d", pk.uw);
+        });
+      } else { eqLine.setAttribute("d", p.line); eqArea.setAttribute("d", p.area); uwArea.setAttribute("d", p.uw) }
+      if (mode === "reveal" || mode === "period") tween(mode === "reveal" ? 2200 : 900, easeInOut, k => clip.setAttribute("width", W * k + 2));
+      else clip.setAttribute("width", W + 2);
+      heat(c.cm);
+    }
+
+    // Controlli
+    const range = $("#capRange"), capVal = $("#capVal"), presets = [...$("#capPresets").children];
+    const setCap = (v, animate) => {
+      const old = state.cap; state.cap = v; range.value = v;
+      range.style.setProperty("--p", ((v - 1000) / 99000 * 100) + "%");
+      presets.forEach(b => b.classList.toggle("on", +b.dataset.v === v));
+      if (animate && !reduce) tween(500, easeOutExpo, k => capVal.textContent = euro(old + (v - old) * k)); else capVal.textContent = euro(v);
+      if (shown) render("cap");
+    };
+    range.addEventListener("input", () => setCap(+range.value));
+    presets.forEach(b => b.addEventListener("click", () => setCap(+b.dataset.v, true)));
+    $("#period").addEventListener("click", e => {
+      const b = e.target.closest("button"); if (!b) return;
+      [...b.parentNode.children].forEach(x => { x.classList.toggle("on", x === b); x.setAttribute("aria-checked", x === b) });
+      state.period = b.dataset.p; if (shown) render("period");
+    });
+    $("#netToggle").addEventListener("change", e => { state.net = e.target.checked; if (shown) render("morph") });
+
+    // Puntatore: mirino, punto e riquadro con i valori
+    const move = e => {
+      if (!view) return;
+      const r = svg.getBoundingClientRect(), fx = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
+      const t = view.sc.t0 + fx * (view.sc.t1 - view.sc.t0), v = view.c.v;
+      let lo = 0, hi = v.length - 1; while (hi - lo > 1) { const m = (lo + hi) >> 1; v[m].t < t ? lo = m : hi = m }
+      const p = (t - v[lo].t) < (v[hi].t - t) ? v[lo] : v[hi];
+      const x = view.sc.x(p.t), y = view.sc.y(p.v), off = r.left - chart.getBoundingClientRect().left;
+      const px = off + x / W * r.width, py = y / H * r.height;
+      cross.setAttribute("x1", x); cross.setAttribute("x2", x);
+      dot.style.left = px + "px"; dot.style.top = py + "px"; dot.style.opacity = 1;
+      tipEl.innerHTML = `<span class="d">${dLabel(p.d)}</span><b class="num">${euro(p.v)}</b><span class="num ${p.v >= state.cap ? "acc" : ""}">${pct((p.v / state.cap - 1) * 100)}</span>`;
+      const tw = tipEl.offsetWidth, cw = chart.clientWidth;
+      tipEl.style.left = Math.min(cw - tw / 2, Math.max(tw / 2, px)) + "px";
+      tipEl.style.top = (py > r.height * .45 ? 8 : r.height - 70) + "px";
+      tipEl.classList.add("show");
+    };
+    const leave = () => { tipEl.classList.remove("show"); dot.style.opacity = 0; cross.setAttribute("x1", -10); cross.setAttribute("x2", -10) };
+    svg.addEventListener("pointermove", move); svg.addEventListener("pointerdown", move);
+    svg.addEventListener("pointerleave", leave);
+
+    setCap(10000);
+    presets.forEach(b => b.classList.remove("on"));
+    heat("");
+    window.__proofReveal = () => { if (shown) return; shown = true; render("reveal") };
+  })();
+})();
+</script>
